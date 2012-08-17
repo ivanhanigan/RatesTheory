@@ -12,7 +12,24 @@
   require(ProjectTemplate)
   load.project()
 #+end_src
+* COMMENT init
+#+name:func-general
+#+begin_src R :session *R* :tangle munge/func-general.r :exports none :eval no
+#######################################################################
+# name: func-general
+ if (!require(epitools)) install.packages('epitools', repos='http://cran.csiro.au'); require(epitools)
+ if (!require(foreign)) install.packages('foreign', repos='http://cran.csiro.au'); require(foreign)
 
+#+end_src
+
+** Additions
+#+name:additions
+#+begin_src R :session *R* :tangle init.r :exports none :eval no
+  ####
+  # init additional directories for project management
+  source('~/dropbox/tools/analysisTemplate.r')
+  analysisTemplate()
+#+end_src
 * Introduction to rates, standardisation and adjustment
 \section{Introduction}
 The aim of this project is to explore the methodological issues of rates, standardisation and adjustment in regression models.
@@ -33,15 +50,6 @@ The direct and indirect methods have a long history of use to control for age (a
 While direct standardization does provide comparable measures it has other weaknesses, such as greater susceptibility than the indirect method to error with small numbers. Indirect incidence ratios can be compared if you make the assumption that the ratio of rates between the study and standard populations is constant; this is similar to the assumption of proportional hazards in Cox regression. 
 * Adjustment in regression
 The aim of standardisation is to control for a compositional variable. This, of course, is also one of the main aims of regression analysis. One could analyse the data using Poisson regression, a method appropriate for small numbers. An advantage of the regression approach is that one can easily control for multiple confounders. Also, we can test for the presence of an interaction, which would question the validity of the additive model underlying direct standardization. 
-* init
-* Additions
-#+name:additions
-#+begin_src R :session *R* :tangle init.r :exports none :eval no
-  ####
-  # init additional directories for project management
-  source('~/dropbox/tools/analysisTemplate.r')
-  analysisTemplate()
-#+end_src
 * Data
 \section{Data}
 ** get the princeton tutorial
@@ -91,9 +99,138 @@ downloaded 13-4-12
 
 * Analysis
 \section{Analysis}
+** available tools
+*** epitools
+#+name:do-epitools
+#+begin_src R :session *R* :tangle src/do-epitools.r :exports none :eval no
+#######################################################################
+# name: do-epitools
+# epitools has direct and indirect functions
+# TODO stataCompare
+ 
+##From Selvin (2004)
+##enter data
+dth60 <- as.numeric(read.table(textConnection('141 926 1253 1080 1869 4891 14956 30888 41725 26501 5928')))
+pop60 <- as.numeric(read.table(textConnection('1784033 7065148 15658730 10482916 9939972 10563872 9114202 6850263 4702482 1874619 330915')))
+dth40 <- as.numeric(read.table(textConnection('45 201 320 670 1126 3160 9723 17935 22179 13461 2238')))
+pop40 <- as.numeric(read.table(textConnection('906897 3794573 10003544 10629526 9465330 8249558 7294330
+5022499 2920220 1019504 142532')))
+##calculate age-specific rates
+rate60 <- dth60/pop60
+rate40 <- dth40/pop40
+#create array for display
+tab <- array(c(dth60, pop60, round(rate60*100000,1), dth40, pop40,
+round(rate40*100000,1)),c(11,3,2))
+agelabs <- c('<1', '1-4', '5-14', '15-24', '25-34', '35-44', '45-54',
+'55-64', '65-74', '75-84', '85+')
+dimnames(tab) <- list(agelabs,c('Deaths', 'Population', 'Rate'),
+c('1960', '1940'))
+tab
+##implement direct age standardization using ’ageadjust.direct’
+dsr <- ageadjust.direct(count = dth40, pop = pop40, stdpop = pop60)
+round(100000*dsr, 2) ##rate per 100,000 per year
+##implement indirect age standardization using ’ageadjust.indirect’
+isr <- ageadjust.indirect(count = dth40, pop = pop40,
+stdcount = dth60, stdpop = pop60)
+round(isr$sir, 2) ##standarized incidence ratio
+round(100000*isr$rate, 1) ##rate per 100,000 per year 
+  
+#+end_src
+
 * Direct standardisation
-** COMMENT func
-*** func-directRates
+** dstdize
+#+name:do-dstdize
+#+begin_src R :session *R* :tangle src/do-dstdize.r :exports none :eval no
+#######################################################################
+# name: do-dstdize
+# studypops        
+d <- read.table('http://data.princeton.edu/eco572/datasets/preston21long.dat', col.names = c('country', 'ageg', 'pop', 'deaths'))
+head(d)
+ 
+# standard
+standard<- ddply(d, 'ageg', function(df) return(c(pop=sum(df$pop))))
+
+# epitools needs single
+do <- subset(d, country == 'Sweden')   # Kazakhstan
+ageadjust.direct(count=do$deaths, pop=do$pop, stdpop=standard$pop)     
+	
+rageadjust.direct <- function (data, count, pop, rate = NULL, stdpop, by, using = NA,print=T, time = NULL, conf.level = 0.95, age = 'age'){
+
+if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
+d <- data
+studysite <- by
+standard <- using
+agevar <- age
+
+if (missing(count) == TRUE & !missing(pop) == TRUE & is.null(rate) == TRUE) {
+d$count <- d[,rate] * d[,pop]
+}
+if (missing(pop) == TRUE & !missing(count) == TRUE & is.null(rate) == TRUE) {
+d$pop <- d[,count]/d[,rate]
+}
+if (is.null(rate) == TRUE & !missing(count) == TRUE & !missing(pop) == TRUE) {
+d$rate <- d[,count]/d[,pop]
+}
+alpha <- 1 - conf.level
+
+if(is.null(time)){
+	observed<-ddply(d, c(studysite), function(df) return(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+	standard$stdwt <- standard[,stdpop]/sum(standard[,stdpop])
+	d<- merge(d,standard, by = age) 
+	dsr <- ddply(d, by, function(df) return(c(dsr = sum(df$stdwt * df$rate))))
+	names(d) <- gsub(paste(pop,'.x',sep=''), pop, names(d))
+	dsr.var <- ddply(d, by, function(df) return(c(dsr.var = sum((df$stdwt^2) * (df[,count]/df[,pop]^2))))) 
+	wm <- ddply(d, by, function(df) return(c(wm=max(df$stdwt/df[,pop]))))
+	dsr<-merge(dsr, dsr.var, by = by)
+	dsr<-merge(dsr, wm, by = by)
+
+	gamma.lci <- ddply(dsr, by, function(df) 
+		return(c(lci=qgamma(alpha/2, shape = (df$dsr^2)/df$dsr.var, scale = df$dsr.var/df$dsr)
+		)))
+	gamma.uci <- ddply(dsr, by, function(df) 
+		return(c(uci=qgamma(1 - alpha/2, shape = ((df$dsr + df$wm)^2)/(df$dsr.var + df$wm^2), scale = (df$dsr.var + df$wm^2)/(df$dsr + df$wm))
+		)))
+	dsr<-merge(dsr, gamma.lci, by = by)
+	dsr<-merge(dsr, gamma.uci, by = by)
+	names(dsr) <- gsub('dsr', 'adj.rate', names(dsr)) 
+	outdat <- merge(observed,dsr[,c('country','adj.rate','lci','uci')])
+} else {
+observed<-ddply(d, c(studysite, time), function(df) return(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+standard$stdwt <- standard[,stdpop]/sum(standard[,stdpop])
+d<- merge(d,standard, by = age) 
+dsr <- ddply(d, c(by, time), function(df) return(c(dsr = sum(df$stdwt * df$rate))))
+names(d) <- gsub(paste(pop,'.x',sep=''), pop, names(d))
+dsr.var <- ddply(d, c(by, time), function(df) return(c(dsr.var = sum((df$stdwt^2) * (df[,count]/df[,pop]^2))))) 
+wm <- ddply(d, c(by, time), function(df) return(c(wm=max(df$stdwt/df[,pop]))))
+dsr<-merge(dsr, dsr.var, by = c(by, time))
+dsr<-merge(dsr, wm, by = c(by, time))
+
+gamma.lci <- ddply(dsr, c(by, time), function(df) 
+	return(c(lci=qgamma(alpha/2, shape = (df$dsr^2)/df$dsr.var, scale = df$dsr.var/df$dsr)
+	)))
+gamma.uci <- ddply(dsr, c(by, time), function(df) 
+	return(c(uci=qgamma(1 - alpha/2, shape = ((df$dsr + df$wm)^2)/(df$dsr.var + df$wm^2), scale = (df$dsr.var + df$wm^2)/(df$dsr + df$wm))
+	)))
+dsr<-merge(dsr, gamma.lci, by = c(by, time))
+dsr<-merge(dsr, gamma.uci, by = c(by, time))
+names(dsr) <- gsub('dsr', 'adj.rate', names(dsr)) 
+outdat <- merge(observed,dsr[,c(by, time,'adj.rate','lci','uci')])
+
+}
+return(outdat)		
+}
+
+rageadjust.direct(data = d, age ='ageg', count='deaths', pop='pop', stdpop='pop', using=standard, by = 'country')     
+
+d$day <- c(rep(1,19),rep(2,19))
+d$studysite <- 'allTheSame'
+rageadjust.direct(data = d, age ='ageg', count='deaths', pop='pop', stdpop='pop', using=standard, by = 'studysite', time = 'day')     
+
+#+end_src
+
+** directRates
+*** COMMENT func
+**** func-directRates
 
 
 #+name:func-directRates.r
@@ -140,11 +277,118 @@ directRates <- function(analyte, standard_pop, stratify.var = c('dthdate')){
 
 #+end_src
 
-** TODO load
-** TODO clean
-** TODO do
+*** TODO load
+*** TODO clean
+*** TODO do
 
 * Indirect standardisation
+** istdize
+We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
+
+#+name:do-istdize
+#+begin_src R :session *R* :tangle src/do-istdize.r :exports none :eval no
+#######################################################################
+# name: do-istdize
+
+popkahn <- read.dta('http://www.stata-press.com/data/r9/popkahn.dta')
+popkahn        
+        
+kahn <- read.dta('http://www.stata-press.com/data/r9/kahn.dta')
+kahn
+
+
+
+#for(st in c('California', 'Maine')){
+# st <- 'Maine'
+# print(st)        
+do <- subset(kahn, state == 'Maine')   
+# note needs counts for each age, but Main only has death in first row
+do$death <- do$death[1]        
+print(ageadjust.indirect(count=do$death/length(do$death), pop=do$population, stdcount = popkahn$deaths, stdpop=popkahn$population))
+#}
+
+#+end_src
+
+** rewrite with studypop and time
+#+name:do-istdize-with-pop-and-time
+#+begin_src R :session *R* :tangle src/do-istdize-with-pop-and-time.r :exports none :eval no
+#######################################################################
+# name: do-istdize-with-pop-and-time
+# rewrite with by studypop and time
+
+rageadjust.indirect <- function (data, count, pop, using, stdcount, stdpop, stdrate = NULL, conf.level = 0.95, by, time = NULL){
+	if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
+	# count can either be age specific if known for study pops or a total deaths if unknown (in which case should be a fraction that sums to the total)
+	d <- data
+	studysite <- by
+	standard <- using
+
+	# if both have a col called death and population the combined names will have.x or .y so rename first
+	names(standard) <- gsub(stdcount, paste(stdcount,'Std',sep=''), names(standard))
+	names(standard) <- gsub(stdpop, paste(stdpop,'Std',sep=''), names(standard))
+	d <- merge(d,standard, all.x=T, by = 'age')
+
+	zv <- qnorm(0.5 * (1 + conf.level))
+
+	if(is.null(time)){
+		observed<-ddply(d, c(studysite), function(df) return(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+		# NOT DONE YET
+		# if (is.null(stdrate) == TRUE & length(stdcount) > 1 & length(stdpop > 
+			# 1)) {
+			# stdrate <- stdcount/stdpop
+		# }
+		expected <- ddply(d, c(studysite), function(df) return(c(stdcrate=sum(df[, paste(stdcount,'Std',sep='')])/sum(df[,paste(stdpop,'Std',sep='')]), expected = sum((df[, paste(stdcount,'Std',sep='')]/df[,paste(stdpop,'Std',sep='')]) * df[,pop])))) 
+	} else {
+
+		observed<-ddply(d, c(studysite, time), function(df) return(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+		expected <- ddply(d, c(studysite, time), function(df) return(c(stdcrate=sum(df[, paste(stdcount,'Std',sep='')])/sum(df[,paste(stdpop,'Std',sep='')]), expected = sum((df[, paste(stdcount,'Std',sep='')]/df[,paste(stdpop,'Std',sep='')]) * df[,pop])))) 
+
+	}
+
+	outdat <- merge(observed, expected)
+	outdat$sir <- outdat$observed/outdat$expected
+	outdat$logsir.lci <- log(outdat$sir) - zv * (1/sqrt(outdat$observed))
+	outdat$logsir.uci <- log(outdat$sir) + zv * (1/sqrt(outdat$observed))
+	outdat$sir.lci <- exp(outdat$logsir.lci)
+	outdat$sir.uci <- exp(outdat$logsir.uci)
+	outdat$adj.rate <- outdat$sir * outdat$stdcrate
+	outdat$adj.rate.lci <- outdat$sir.lci * outdat$stdcrate
+	outdat$adj.rate.uci <- outdat$sir.uci * outdat$stdcrate
+	if(is.null(time)){
+	outdat <- outdat[,c(studysite,'observed','expected','sir','sir.lci','sir.uci','crude.rate','adj.rate','adj.rate.lci','adj.rate.uci')]
+	} else {
+	outdat <- outdat[,c(studysite,time,'observed','expected','sir','sir.lci','sir.uci','crude.rate','adj.rate','adj.rate.lci','adj.rate.uci')]
+	}        
+	return(outdat)
+}
+
+
+# standard
+popkahn <- read.dta('http://www.stata-press.com/data/r9/popkahn.dta')
+popkahn        
+# studypops        
+kahn <- read.dta('http://www.stata-press.com/data/r9/kahn.dta')
+kahn
+# note needs counts for each age, but Main only has death in first row     
+kahn[kahn$state == 'Maine','death'] <- 11051
+kahn
+# need to create the fraction of deaths in the age groups for this example to work
+kahn$count <- kahn$death/(length(kahn$death)/length(table(kahn$state)))
+
+rageadjust.indirect(data=kahn, by = 'state', time = NULL, using = popkahn, count='count', pop='population', stdcount = 'deaths', stdpop='population')
+
+
+# check orig
+do <- subset(kahn, state == 'Maine')   
+
+ageadjust.indirect(count=do$death/length(do$death), pop=do$population, stdcount = popkahn$deaths, stdpop=popkahn$population)
+
+rage <- rageadjust.indirect(data=do, by = 'state', time = NULL, using = popkahn, count='count', pop='population', stdcount = 'deaths', stdpop='population')
+
+as.data.frame(t(rage[1,]))
+
+
+#+end_src
 
 * Adjustment using regression
 * Control for secular trend
