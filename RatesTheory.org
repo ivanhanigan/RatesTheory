@@ -14,27 +14,30 @@
 #+end_src
 * COMMENT init
 ** init
-#+name:init
-#+begin_src R :session *shell* :tangle init.r :exports none :eval no
-###########################################################################
-# newnode: init
-sink('config/global.dcf')
-print("data_loading: on
+#+name:conf
+#+begin_src text :tangle config/global.dcf :exports none :eval no
+data_loading: on
 cache_loading: on
 munging: on
 logging: off
 load_libraries: off
 libraries: reshape, plyr, ggplot2, stringr, lubridate, epitools, foreign
 as_factors: on
-data_tables: off")
-sink()
-if (!require(reshape)) install.packages('reshape', repos='http://cran.csiro.au'); require(reshape)
-if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
-if (!require(ggplot2)) install.packages('ggplot2', repos='http://cran.csiro.au'); require(ggplot2)
-if (!require(stringr)) install.packages('stringr', repos='http://cran.csiro.au'); require(stringr)
-if (!require(lubridate)) install.packages('lubridate', repos='http://cran.csiro.au'); require(lubridate)
-if (!require(epitools)) install.packages('epitools', repos='http://cran.csiro.au'); require(epitools)
-if (!require(foreign)) install.packages('foreign', repos='http://cran.csiro.au'); require(foreign)
+data_tables: off
+#+end_src
+
+#+name:init
+#+begin_src R :session *shell* :tangle init.r :exports none :eval no
+  ###########################################################################
+  # newnode: init
+  if (!require(reshape)) install.packages('reshape', repos='http://cran.csiro.au'); require(reshape)
+  if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
+  if (!require(ggplot2)) install.packages('ggplot2', repos='http://cran.csiro.au'); require(ggplot2)
+  if (!require(stringr)) install.packages('stringr', repos='http://cran.csiro.au'); require(stringr)
+  if (!require(lubridate)) install.packages('lubridate', repos='http://cran.csiro.au'); require(lubridate)
+  if (!require(epitools)) install.packages('epitools', repos='http://cran.csiro.au'); require(epitools)
+  if (!require(foreign)) install.packages('foreign', repos='http://cran.csiro.au'); require(foreign)
+  
 #+end_src
 
 ** Additions

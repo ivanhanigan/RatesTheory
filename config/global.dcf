@@ -1,1 +1,9 @@
-[1] "data_loading: on\ncache_loading: on\nmunging: on\nlogging: off\nload_libraries: off\nlibraries: reshape, plyr, ggplot2, stringr, lubridate\nas_factors: on\ndata_tables: off"
+
+data_loading: on
+cache_loading: on
+munging: on
+logging: off
+load_libraries: off
+libraries: reshape, plyr, ggplot2, stringr, lubridate, epitools, foreign
+as_factors: on
+data_tables: off

@@ -1,16 +1,6 @@
 
 ###########################################################################
 # newnode: init
-sink('config/global.dcf')
-print("data_loading: on
-cache_loading: on
-munging: on
-logging: off
-load_libraries: off
-libraries: reshape, plyr, ggplot2, stringr, lubridate, epitools, foreign
-as_factors: on
-data_tables: off")
-sink()
 if (!require(reshape)) install.packages('reshape', repos='http://cran.csiro.au'); require(reshape)
 if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
 if (!require(ggplot2)) install.packages('ggplot2', repos='http://cran.csiro.au'); require(ggplot2)
