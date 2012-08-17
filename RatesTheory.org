@@ -5,6 +5,13 @@
 #+LaTeX_CLASS: beamer
 #+LaTeX_CLASS_OPTIONS: [a4paper]
 -----
+#+name:load.project
+#+begin_src R :session *R* :tangle no :exports none :eval no
+  ###########################################################################
+  # newnode: load.project
+  require(ProjectTemplate)
+  load.project()
+#+end_src
 
 * Introduction to rates, standardisation and adjustment
 \section{Introduction}
@@ -29,42 +36,47 @@ The aim of standardisation is to control for a compositional variable. This, of 
 * init
 * Additions
 #+name:additions
-#+begin_src R :session *R* :tangle analysis/init.r :exports none :eval no
+#+begin_src R :session *R* :tangle init.r :exports none :eval no
   ####
   # init additional directories for project management
-  source('i:/my dropbox/tools/analysisTemplate.r')
+  source('~/dropbox/tools/analysisTemplate.r')
   analysisTemplate()
 #+end_src
 * Data
 \section{Data}
+** get the princeton tutorial
 The website by German Rodriguez from Princeton is good [[http://data.princeton.edu/eco572/std.html]]
 Has some data and methods, comparing with book Demography: measuring and modeling population processes? Samuel H. Preston, Patrick Heuveline, Michel Guillot - 2001.
 get data from [[http://data.princeton.edu/eco572/datasets/preston21long.dat]]
 on 13-4-12
-#+name:princeton tute
-#+begin_src R :session *R* :tangle analysis/go.r :exports none :eval no
-  # dl
-  download.file('http://data.princeton.edu/eco572/datasets/preston21long.dat', destfile = 'data//preston21long.dat', mode = 'wb')
-   # load
-   d <- read.table('http://data.princeton.edu/eco572/datasets/preston21long.dat', col.names = c('country', 'ageg', 'pop', 'deaths'))
-   write.csv(d, 'analysis/data/preston21long.csv', row.names = F)
+
+#+name:load-princeton-tute
+#+begin_src R :session *R* :tangle src/load-princeton-tute.r :exports none :eval no
+  ###########################################################################
+  # newnode: load-princeton-tute
+  
+    # dl
+    download.file('http://data.princeton.edu/eco572/datasets/preston21long.dat', destfile = 'data/preston21long.dat', mode = 'wb')
+     # load
+     d <- read.table('http://data.princeton.edu/eco572/datasets/preston21long.dat', col.names = c('country', 'ageg', 'pop', 'deaths'))
+     write.csv(d, 'data/preston21long.csv', row.names = F)
+     
+     # check
+     head(d)
+     png('reports/ageRates.png', res = 100)
+     with(subset(d, country == 'Sweden'), plot((deaths/pop)*1000, log = 'y', type = 'l', col='blue'))
+     with(subset(d, country == 'Kazakhstan'), lines((deaths/pop)*1000, col='red'))
+     legend('bottomright', c('Kazakhstan','Sweden'), lty = 1, col = c('red','blue'))
+     dev.off()
    
-   # check
-   head(d)
-   with(subset(d, country == 'Sweden'), plot((deaths/pop)*1000, log = 'y', type = 'l', col='blue'))
-   with(subset(d, country == 'Kazakhstan'), lines((deaths/pop)*1000, col='red'))
-   legend('bottomright', c('Kazakhstan','Sweden'), lty = 1, col = c('red','blue'))
-   dev.copy(png, 'analysis/reports/ageRates.png')
-   dev.off()
-   dev.off()  
-   
+     
 #+end_src
-* get the stata tutorial
+** get the stata tutorial
 We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
 downloaded 13-4-12
 
 #+name:stata tute
-#+begin_src R :session *R* :tangle analysis/go.r :exports none :eval no
+#+begin_src R :session *R* :tangle main.R :exports none :eval no
   # dl
   #popkahn <- read.dta('http://www.stata-press.com/data/r9/popkahn.dta')
   #popkahn        
@@ -72,14 +84,62 @@ downloaded 13-4-12
   #kahn <- read.dta('http://www.stata-press.com/data/r9/kahn.dta')
   #kahn
   
-    download.file('http://www.stata-press.com/data/r9/popkahn.dta', destfile = 'data//popkahn.dta', mode = 'wb')
+    download.file('http://www.stata-press.com/data/r9/popkahn.dta', destfile = 'data/popkahn.dta', mode = 'wb')
   
-    download.file('http://www.stata-press.com/data/r9/kahn.dta', destfile = 'data//kahn.dta', mode = 'wb')
+    download.file('http://www.stata-press.com/data/r9/kahn.dta', destfile = 'data/kahn.dta', mode = 'wb')
 #+end_src
 
 * Analysis
 \section{Analysis}
 * Direct standardisation
+** COMMENT func
+*** func-directRates
+
+
+#+name:func-directRates.r
+#+begin_src R :session *R* :tangle src/func-directRates.r :exports none :eval no 
+
+
+directRates <- function(analyte, standard_pop, stratify.var = c('dthdate')){       
+ #  analyte = time series of outcomes abd populations, by age and sex
+ #  standard_pop = standard
+ # stratify.var = c('dthdate','sex') # by sex if wanted age rates for each sex, could also be by zone?
+ # TODO 
+ #  make this work with multiple study populations?
+ # if study_pop = NA then will check if multiple study zones, will use the total population, if by time then will use mid point?
+ if(!require(plyr)) install.packages('plyr',repos='http://cran.csiro.au'); require(plyr)
+
+ # step 1 get the standard population
+ # TODO generalise to the optional inclusion of a standard
+
+ # step 2 for each time step calc the age specific rates in study, apply to standard pops
+ # need to merge        
+ analyte <- merge(analyte, standard_pop, all.x = T) #, by.x= 'age', by.y ='age')
+ 
+ # get the daily age specific rates of the ROS and apply to standard
+ # this is the expected number of deaths if the standard had had the same health experience as the study
+ analyte$allcause_asr <- (analyte$allcause/analyte$pop) * analyte$standard_pop
+ analyte$resp_asr <- (analyte$resp/analyte$pop) * analyte$standard_pop
+ analyte$cvd_asr <- (analyte$cvd/analyte$pop) * analyte$standard_pop
+
+        
+ # step 3 sum expected deaths over age, stratify by stratify.var      
+ dailystandard <- ddply(analyte, stratify.var, function(df) return(c(
+  standard_pop_summed = sum(df$standard_pop),
+  allcause_asr_summed = sum(df$allcause_asr),
+  resp_asr_summed = sum(df$resp_asr), 
+  cvd_asr_summed = sum(df$cvd_asr))))
+
+ # and divide by standard population x 100,000 
+ dailystandard$allcause_stndrate <- (dailystandard$allcause_asr_summed/dailystandard$standard_pop_summed) * 100000
+ dailystandard$resp_stndrate <- (dailystandard$resp_asr_summed/dailystandard$standard_pop_summed) * 100000
+ dailystandard$cvd_stndrate <- (dailystandard$cvd_asr_summed/dailystandard$standard_pop_summed) * 100000
+
+ return(dailystandard)
+ }
+
+#+end_src
+
 * Indirect standardisation
 
 * Adjustment using regression

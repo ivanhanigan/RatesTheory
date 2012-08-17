@@ -1,20 +1,10 @@
-% Created 2012-08-17 Fri 16:17
+% Created 2012-08-17 Fri 16:31
 \documentclass[a4paper]{beamer}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{fixltx2e}
+\usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{float}
-\usepackage{wrapfig}
-\usepackage{soul}
-\usepackage{textcomp}
-\usepackage{marvosym}
-\usepackage{wasysym}
-\usepackage{latexsym}
-\usepackage{amssymb}
-\usepackage{hyperref}
-\tolerance=1000
 \providecommand{\alert}[1]{\textbf{#1}}
 
 \title{Rates Theory}
@@ -23,18 +13,15 @@
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
-  pdfcreator={Emacs Org-mode version 7.8.03}}
+  pdfcreator={Emacs Org-mode version 7.8.11}}
 
 \begin{document}
 
 \maketitle
 
-\begin{frame}
-\frametitle{Outline}
-\setcounter{tocdepth}{3}
-\tableofcontents
-\end{frame}
+% Org-mode is exporting headings to 3 levels.
 \hrule
+
 
 \begin{frame}
 \frametitle{Introduction to rates, standardisation and adjustment}
@@ -89,53 +76,61 @@ The aim of standardisation is to control for a compositional variable. This, of 
 \label{sec-8}
 
 \section{Data}
+\begin{itemize}
+
+\item get the princeton tutorial\\
+\label{sec-8-1}%
 The website by German Rodriguez from Princeton is good \href{http://data.princeton.edu/eco572/std.html}{http://data.princeton.edu/eco572/std.html}
 Has some data and methods, comparing with book Demography: measuring and modeling population processes? Samuel H. Preston, Patrick Heuveline, Michel Guillot - 2001.
 get data from \href{http://data.princeton.edu/eco572/datasets/preston21long.dat}{http://data.princeton.edu/eco572/datasets/preston21long.dat}
 on 13-4-12
-\end{frame}
-\begin{frame}
-\frametitle{get the stata tutorial}
-\label{sec-9}
 
+
+
+\item get the stata tutorial\\
+\label{sec-8-2}%
 We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
 downloaded 13-4-12
+
+
+
+\end{itemize} % ends low level
 \end{frame}
 \begin{frame}
 \frametitle{Analysis}
-\label{sec-10}
+\label{sec-9}
 
 \section{Analysis}
 \end{frame}
 \begin{frame}
 \frametitle{Direct standardisation}
-\label{sec-11}
+\label{sec-10}
 \end{frame}
 \begin{frame}
 \frametitle{Indirect standardisation}
-\label{sec-12}
+\label{sec-11}
 \end{frame}
 \begin{frame}
 \frametitle{Adjustment using regression}
-\label{sec-13}
+\label{sec-12}
 \end{frame}
 \begin{frame}
 \frametitle{Control for secular trend}
-\label{sec-14}
+\label{sec-13}
 \end{frame}
 \begin{frame}
 \frametitle{Uses in spatial epidemiology}
-\label{sec-15}
+\label{sec-14}
 \end{frame}
 \begin{frame}
 \frametitle{Indirect standardisation controlling for spatial correlation}
-\label{sec-16}
+\label{sec-15}
 
 We'll use the example of the Conditional Autoregressive (CAR) model of Lip cancer in Scotland.
 \end{frame}
 \begin{frame}
 \frametitle{Regression approach to spatial rates}
-\label{sec-17}
+\label{sec-16}
 
 Mantel and Stark (1968), with reference to an alternative approach to indirect age standardisation. This is useful when the data are being internally standardised (using the data themselves as the standard) 
 and where there is potential confounding. The general approach is to use a regression model with the variable to be standardised (eg age) and with the stratification variable which is potentially confounded (eg area). 
@@ -143,11 +138,11 @@ The standardised rates by the stratification variable can then be found from the
 \end{frame}
 \begin{frame}
 \frametitle{Weight by inverse of variance}
-\label{sec-18}
+\label{sec-17}
 \end{frame}
 \begin{frame}
 \frametitle{References}
-\label{sec-19}
+\label{sec-18}
 \end{frame}
 
 \end{document}
