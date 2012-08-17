@@ -140,6 +140,10 @@ directRates <- function(analyte, standard_pop, stratify.var = c('dthdate')){
 
 #+end_src
 
+** TODO load
+** TODO clean
+** TODO do
+
 * Indirect standardisation
 
 * Adjustment using regression
