@@ -2,8 +2,9 @@
 #+TITLE:Rates Theory 
 #+AUTHOR: Ivan Hanigan
 #+email: ivan.hanigan@anu.edu.au
-#+LaTeX_CLASS: beamer
+#+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [a4paper]
+#+LATEX: \tableofcontents
 -----
 #+name:load.project
 #+begin_src R :session *R* :tangle no :exports none :eval no
@@ -70,7 +71,7 @@ While direct standardization does provide comparable measures it has other weakn
 The aim of standardisation is to control for a compositional variable. This, of course, is also one of the main aims of regression analysis. One could analyse the data using Poisson regression, a method appropriate for small numbers. An advantage of the regression approach is that one can easily control for multiple confounders. Also, we can test for the presence of an interaction, which would question the validity of the additive model underlying direct standardization. 
 * Data
 \section{Data}
-** get the princeton tutorial
+** COMMENT get the princeton tutorial
 The website by German Rodriguez from Princeton is good [[http://data.princeton.edu/eco572/std.html]]
 Has some data and methods, comparing with book Demography: measuring and modeling population processes? Samuel H. Preston, Patrick Heuveline, Michel Guillot - 2001.
 get data from [[http://data.princeton.edu/eco572/datasets/preston21long.dat]]
@@ -97,7 +98,7 @@ on 13-4-12
    
      
 #+end_src
-** get the stata tutorial
+** COMMENT get the stata tutorial
 We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
 downloaded 13-4-12
 
@@ -117,7 +118,7 @@ downloaded 13-4-12
 
 * Analysis
 \section{Analysis}
-** available tools
+** COMMENT available tools
 *** epitools
 #+name:do-epitools
 #+begin_src R :session *R* :tangle src/do-epitools.r :exports none :eval no
@@ -156,7 +157,7 @@ round(100000*isr$rate, 1) ##rate per 100,000 per year
 #+end_src
 
 * Direct standardisation
-** dstdize
+** COMMENT dstdize
 #+name:do-dstdize
 #+begin_src R :session *R* :tangle src/do-dstdize.r :exports none :eval no
   #######################################################################
@@ -246,7 +247,7 @@ round(100000*isr$rate, 1) ##rate per 100,000 per year
   
 #+end_src
 
-** directRates
+** COMMENT directRates
 *** COMMENT func
 **** func-directRates
 
@@ -300,7 +301,7 @@ directRates <- function(analyte, standard_pop, stratify.var = c('dthdate')){
 *** TODO do
 
 * Indirect standardisation
-** istdize
+** COMMENT istdize
 We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
 
 #+name:do-istdize
@@ -327,7 +328,7 @@ print(ageadjust.indirect(count=do$death/length(do$death), pop=do$population, std
 
 #+end_src
 
-** rewrite with studypop and time
+** COMMENT rewrite with studypop and time
 #+name:do-istdize-with-pop-and-time
 #+begin_src R :session *R* :tangle src/do-istdize-with-pop-and-time.r :exports none :eval no
 #######################################################################
@@ -412,7 +413,7 @@ as.data.frame(t(rage[1,]))
 * Control for secular trend
 * Uses in spatial epidemiology
 
-* Indirect standardisation controlling for spatial correlation
+* COMMENT Indirect standardisation controlling for spatial correlation
 We'll use the example of the Conditional Autoregressive (CAR) model of Lip cancer in Scotland.
 # Hierarchical Modeling and Analysis for Spatial Data (ISBN: 1-58488-410-X), by S. Banerjee, B.P. Carlin and A.E. Gelfand, Boca Raton, FL: Chapman and Hall/CRC Press, 2004. 
 #Lipsbrad.odc, the full WinBUGS code for the Scottish lip cancer example (page 167) 
@@ -427,5 +428,10 @@ The standardised rates by the stratification variable can then be found from the
 # see Mark's SAS implementation at keynote tools/Statistical Rules of Thumb/standardised incidence ratios/regression approach 574
 
 * Weight by inverse of variance
+In regression analyses the age-standardized rates can be used as the predictor variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
+\cite{Boyle} (page 141).
 * References
+\bibliographystyle{unsrt}
+\bibliography{/home/ivan/references/library}
+
 
