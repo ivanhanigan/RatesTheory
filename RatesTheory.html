@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Rates Theory </title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="Rates Theory "/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2013-10-30T07:54+1100"/>
+<meta name="author" content="Ivan Hanigan"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Rates Theory </h1>
+
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction to rates, standardisation and adjustment</a></li>
+<li><a href="#sec-2">2 Theoretical background</a></li>
+<li><a href="#sec-3">3 Compared to what?</a></li>
+<li><a href="#sec-4">4 Standardisation strengths and weaknesses</a></li>
+<li><a href="#sec-5">5 Adjustment in regression</a></li>
+<li><a href="#sec-6">6 Data</a></li>
+<li><a href="#sec-7">7 Analysis</a></li>
+<li><a href="#sec-8">8 Direct standardisation</a></li>
+<li><a href="#sec-9">9 Indirect standardisation</a></li>
+<li><a href="#sec-10">10 Adjustment using regression</a></li>
+<li><a href="#sec-11">11 Control for secular trend</a></li>
+<li><a href="#sec-12">12 Uses in spatial epidemiology</a></li>
+<li><a href="#sec-13">13 Indirect standardisation controlling for spatial correlation</a></li>
+<li><a href="#sec-14">14 Regression approach to spatial rates</a></li>
+<li><a href="#sec-15">15 Weight by inverse of variance</a></li>
+<li><a href="#sec-16">16 References</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction to rates, standardisation and adjustment</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>\section{Introduction}
+The aim of this project is to explore the methodological issues of rates, standardisation and adjustment in regression models.
+This topic is relevant in epidemiology and demography (and most human sciences).
+</p>
+<p>
+The demonstration will utilize the R package \emph{ProjectTemplate}.
+</p></div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Theoretical background</h2>
+<div class="outline-text-2" id="text-2">
+
+<p>Different age or sex structures of study populations can be the reason for important differences between the health outcomes of the populations that need to be accounted for when assessing other putative causal relationships such as socio-economic status or the physical environment. 
+</p>
+<p>
+There are two common methods for age standardisation: direct and indirect. There is also an alternative method using Poisson models that adjust for age as a covariate.
+</p></div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Compared to what?</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>Question: Hi Epidemiologist, how are you?
+</p>
+<p>
+Epidemiologist: Compared to what?
+</p></div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Standardisation strengths and weaknesses</h2>
+<div class="outline-text-2" id="text-4">
+
+<p>The direct and indirect methods have a long history of use to control for age (and indeed other differences between populations such as sex and other stratifying variables).  However, the idea that indirect standardisation is based on the non-study population as the common standard is a misconception which results in a common methodological error: comparing indirectly age standardised incidence ratios (these can only really compare the study population to the standard population, not between study populations). 
+</p>
+<p>
+While direct standardization does provide comparable measures it has other weaknesses, such as greater susceptibility than the indirect method to error with small numbers. Indirect incidence ratios can be compared if you make the assumption that the ratio of rates between the study and standard populations is constant; this is similar to the assumption of proportional hazards in Cox regression. 
+</p></div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Adjustment in regression</h2>
+<div class="outline-text-2" id="text-5">
+
+<p>The aim of standardisation is to control for a compositional variable. This, of course, is also one of the main aims of regression analysis. One could analyse the data using Poisson regression, a method appropriate for small numbers. An advantage of the regression approach is that one can easily control for multiple confounders. Also, we can test for the presence of an interaction, which would question the validity of the additive model underlying direct standardization. 
+</p></div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Data</h2>
+<div class="outline-text-2" id="text-6">
+
+<p>\section{Data}
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Analysis</h2>
+<div class="outline-text-2" id="text-7">
+
+<p>\section{Analysis}
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Direct standardisation</h2>
+<div class="outline-text-2" id="text-8">
+
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Indirect standardisation</h2>
+<div class="outline-text-2" id="text-9">
+
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Adjustment using regression</h2>
+<div class="outline-text-2" id="text-10">
+
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Control for secular trend</h2>
+<div class="outline-text-2" id="text-11">
+
+</div>
+
+</div>
+
+<div id="outline-container-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> Uses in spatial epidemiology</h2>
+<div class="outline-text-2" id="text-12">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Indirect standardisation controlling for spatial correlation</h2>
+<div class="outline-text-2" id="text-13">
+
+<p>We'll use the example of the Conditional Autoregressive (CAR) model of Lip cancer in Scotland.
+#Lipsbrad.odc, the full WinBUGS code for the Scottish lip cancer example (page 167) 
+#<a href="http://www.biostat.umn.edu/~brad/data2.html">http://www.biostat.umn.edu/~brad/data2.html</a>
+</p></div>
+
+</div>
+
+<div id="outline-container-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> Regression approach to spatial rates</h2>
+<div class="outline-text-2" id="text-14">
+
+<p>Mantel and Stark (1968), with reference to an alternative approach to indirect age standardisation. This is useful when the data are being internally standardised (using the data themselves as the standard) 
+and where there is potential confounding. The general approach is to use a regression model with the variable to be standardised (eg age) and with the stratification variable which is potentially confounded (eg area). 
+The standardised rates by the stratification variable can then be found from the regression predictions scaled to the observed total. Note that this approach requires non-zero cells for each stratum (eg at least one event per area).
+</p>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-15" class="outline-2">
+<h2 id="sec-15"><span class="section-number-2">15</span> Weight by inverse of variance</h2>
+<div class="outline-text-2" id="text-15">
+
+<p>In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
+\cite{Boyle} (page 141).
+</p></div>
+
+</div>
+
+<div id="outline-container-16" class="outline-2">
+<h2 id="sec-16"><span class="section-number-2">16</span> References</h2>
+<div class="outline-text-2" id="text-16">
+
+<p>\bibliographystyle{unsrt}
+\bibliography{/home/ivan/references/library}
+</p>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

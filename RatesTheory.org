@@ -413,7 +413,7 @@ as.data.frame(t(rage[1,]))
 * Control for secular trend
 * Uses in spatial epidemiology
 
-* COMMENT Indirect standardisation controlling for spatial correlation
+* Indirect standardisation controlling for spatial correlation
 We'll use the example of the Conditional Autoregressive (CAR) model of Lip cancer in Scotland.
 # Hierarchical Modeling and Analysis for Spatial Data (ISBN: 1-58488-410-X), by S. Banerjee, B.P. Carlin and A.E. Gelfand, Boca Raton, FL: Chapman and Hall/CRC Press, 2004. 
 #Lipsbrad.odc, the full WinBUGS code for the Scottish lip cancer example (page 167) 
@@ -428,7 +428,7 @@ The standardised rates by the stratification variable can then be found from the
 # see Mark's SAS implementation at keynote tools/Statistical Rules of Thumb/standardised incidence ratios/regression approach 574
 
 * Weight by inverse of variance
-In regression analyses the age-standardized rates can be used as the predictor variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
+In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
 \cite{Boyle} (page 141).
 * References
 \bibliographystyle{unsrt}
