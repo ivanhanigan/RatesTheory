@@ -1,0 +1,97 @@
+% Created 2013-10-30 Wed 07:54
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{Rates Theory}
+\author{Ivan Hanigan}
+\date{\today}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.9.3f}}
+
+\begin{document}
+
+\maketitle
+
+% Org-mode is exporting headings to 3 levels.
+\tableofcontents
+\hrule
+
+\section{Introduction to rates, standardisation and adjustment}
+\label{sec-1}
+
+\section{Introduction}
+The aim of this project is to explore the methodological issues of rates, standardisation and adjustment in regression models.
+This topic is relevant in epidemiology and demography (and most human sciences).
+
+The demonstration will utilize the R package \emph{ProjectTemplate}.
+\section{Theoretical background}
+\label{sec-2}
+
+Different age or sex structures of study populations can be the reason for important differences between the health outcomes of the populations that need to be accounted for when assessing other putative causal relationships such as socio-economic status or the physical environment. 
+
+There are two common methods for age standardisation: direct and indirect. There is also an alternative method using Poisson models that adjust for age as a covariate.
+\section{Compared to what?}
+\label{sec-3}
+
+Question: Hi Epidemiologist, how are you?
+
+Epidemiologist: Compared to what?
+\section{Standardisation strengths and weaknesses}
+\label{sec-4}
+
+The direct and indirect methods have a long history of use to control for age (and indeed other differences between populations such as sex and other stratifying variables).  However, the idea that indirect standardisation is based on the non-study population as the common standard is a misconception which results in a common methodological error: comparing indirectly age standardised incidence ratios (these can only really compare the study population to the standard population, not between study populations). 
+
+While direct standardization does provide comparable measures it has other weaknesses, such as greater susceptibility than the indirect method to error with small numbers. Indirect incidence ratios can be compared if you make the assumption that the ratio of rates between the study and standard populations is constant; this is similar to the assumption of proportional hazards in Cox regression. 
+\section{Adjustment in regression}
+\label{sec-5}
+
+The aim of standardisation is to control for a compositional variable. This, of course, is also one of the main aims of regression analysis. One could analyse the data using Poisson regression, a method appropriate for small numbers. An advantage of the regression approach is that one can easily control for multiple confounders. Also, we can test for the presence of an interaction, which would question the validity of the additive model underlying direct standardization. 
+\section{Data}
+\label{sec-6}
+
+\section{Data}
+\section{Analysis}
+\label{sec-7}
+
+\section{Analysis}
+\section{Direct standardisation}
+\label{sec-8}
+\section{Indirect standardisation}
+\label{sec-9}
+\section{Adjustment using regression}
+\label{sec-10}
+\section{Control for secular trend}
+\label{sec-11}
+\section{Uses in spatial epidemiology}
+\label{sec-12}
+\section{Indirect standardisation controlling for spatial correlation}
+\label{sec-13}
+
+We'll use the example of the Conditional Autoregressive (CAR) model of Lip cancer in Scotland.
+\#Lipsbrad.odc, the full WinBUGS code for the Scottish lip cancer example (page 167) 
+\#\href{http://www.biostat.umn.edu/~brad/data2.html}{http://www.biostat.umn.edu/\~brad/data2.html}
+\section{Regression approach to spatial rates}
+\label{sec-14}
+
+Mantel and Stark (1968), with reference to an alternative approach to indirect age standardisation. This is useful when the data are being internally standardised (using the data themselves as the standard) 
+and where there is potential confounding. The general approach is to use a regression model with the variable to be standardised (eg age) and with the stratification variable which is potentially confounded (eg area). 
+The standardised rates by the stratification variable can then be found from the regression predictions scaled to the observed total. Note that this approach requires non-zero cells for each stratum (eg at least one event per area).
+\section{Weight by inverse of variance}
+\label{sec-15}
+
+In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
+\cite{Boyle} (page 141).
+\section{References}
+\label{sec-16}
+
+\bibliographystyle{unsrt}
+\bibliography{/home/ivan/references/library}
+
+\end{document}
