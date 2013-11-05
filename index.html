@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Rates, Standardisation and Adjustment</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="Rates, Standardisation and Adjustment"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2013-11-06T09:37+1100"/>
+<meta name="author" content="Ivan Hanigan"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Rates, Standardisation and Adjustment</h1>
+
+
+<hr/>
+
+
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction to rates, standardisation and adjustment</a></li>
+<li><a href="#sec-2">2 Theoretical background</a></li>
+<li><a href="#sec-3">3 Compared to what?</a></li>
+<li><a href="#sec-4">4 Standardisation strengths and weaknesses</a></li>
+<li><a href="#sec-5">5 Adjustment in regression</a></li>
+<li><a href="#sec-6">6 Data</a>
+<ul>
+<li><a href="#sec-6-1">6.1 get the princeton tutorial</a></li>
+<li><a href="#sec-6-2">6.2 get the stata tutorial</a></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 Analysis</a>
+<ul>
+<li><a href="#sec-7-1">7.1 available tools</a>
+<ul>
+<li><a href="#sec-7-1-1">7.1.1 epitools</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-8">8 Direct standardisation</a>
+<ul>
+<li><a href="#sec-8-1">8.1 dstdize</a></li>
+<li><a href="#sec-8-2">8.2 directRates</a>
+<ul>
+<li><a href="#sec-8-2-1">8.2.1 func</a></li>
+<li><a href="#sec-8-2-2">8.2.2 load</a></li>
+<li><a href="#sec-8-2-3">8.2.3 clean</a></li>
+<li><a href="#sec-8-2-4">8.2.4 do</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-9">9 Indirect standardisation</a>
+<ul>
+<li><a href="#sec-9-1">9.1 istdize</a></li>
+<li><a href="#sec-9-2">9.2 rewrite with studypop and time</a></li>
+</ul>
+</li>
+<li><a href="#sec-10">10 Adjustment using regression</a></li>
+<li><a href="#sec-11">11 Control for secular trend</a></li>
+<li><a href="#sec-12">12 Uses in spatial epidemiology</a></li>
+<li><a href="#sec-13">13 Indirect standardisation controlling for spatial correlation</a></li>
+<li><a href="#sec-14">14 Regression approach to spatial rates</a></li>
+<li><a href="#sec-15">15 Weight by inverse of variance</a></li>
+<li><a href="#sec-16">16 References</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction to rates, standardisation and adjustment</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>\section{Introduction}
+The aim of this project is to explore the methodological issues of rates, standardisation and adjustment in regression models.
+This topic is relevant in epidemiology and demography (and most human sciences).
+</p>
+<p>
+The demonstration will utilize the R package \emph{ProjectTemplate}.
+</p></div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Theoretical background</h2>
+<div class="outline-text-2" id="text-2">
+
+<p>Different age or sex structures of study populations can be the reason for important differences between the health outcomes of the populations that need to be accounted for when assessing other putative causal relationships such as socio-economic status or the physical environment. 
+</p>
+<p>
+There are two common methods for age standardisation: direct and indirect. There is also an alternative method using Poisson models that adjust for age as a covariate.
+</p></div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Compared to what?</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>Question: Hi Epidemiologist, how are you?
+</p>
+<p>
+Epidemiologist: Compared to what?
+</p></div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Standardisation strengths and weaknesses</h2>
+<div class="outline-text-2" id="text-4">
+
+<p>The direct and indirect methods have a long history of use to control for age (and indeed other differences between populations such as sex and other stratifying variables).  However, the idea that indirect standardisation is based on the non-study population as the common standard is a misconception which results in a common methodological error: comparing indirectly age standardised incidence ratios (these can only really compare the study population to the standard population, not between study populations). 
+</p>
+<p>
+While direct standardization does provide comparable measures it has other weaknesses, such as greater susceptibility than the indirect method to error with small numbers. Indirect incidence ratios can be compared if you make the assumption that the ratio of rates between the study and standard populations is constant; this is similar to the assumption of proportional hazards in Cox regression. 
+</p></div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Adjustment in regression</h2>
+<div class="outline-text-2" id="text-5">
+
+<p>The aim of standardisation is to control for a compositional variable. This, of course, is also one of the main aims of regression analysis. One could analyse the data using Poisson regression, a method appropriate for small numbers. An advantage of the regression approach is that one can easily control for multiple confounders. Also, we can test for the presence of an interaction, which would question the validity of the additive model underlying direct standardization. 
+</p></div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Data</h2>
+<div class="outline-text-2" id="text-6">
+
+<p>\section{Data}
+</p>
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> get the princeton tutorial</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>The website by German Rodriguez from Princeton is good <a href="http://data.princeton.edu/eco572/std.html">http://data.princeton.edu/eco572/std.html</a>
+Has some data and methods, comparing with book Demography: measuring and modeling population processes? Samuel H. Preston, Patrick Heuveline, Michel Guillot - 2001.
+get data from <a href="http://data.princeton.edu/eco572/datasets/preston21long.dat">http://data.princeton.edu/eco572/datasets/preston21long.dat</a>
+on 13-4-12
+</p>
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">newnode: load-princeton-tute</span>
+
+  <span style="color: #586e75;"># </span><span style="color: #586e75;">dl</span>
+  download.file(<span style="color: #2aa198;">'http://data.princeton.edu/eco572/datasets/preston21long.dat'</span>, destfile = <span style="color: #2aa198;">'data/preston21long.dat'</span>, mode = <span style="color: #2aa198;">'wb'</span>)
+   <span style="color: #586e75;"># </span><span style="color: #586e75;">load</span>
+   d <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.table(<span style="color: #2aa198;">'http://data.princeton.edu/eco572/datasets/preston21long.dat'</span>, col.names = c(<span style="color: #2aa198;">'country'</span>, <span style="color: #2aa198;">'ageg'</span>, <span style="color: #2aa198;">'pop'</span>, <span style="color: #2aa198;">'deaths'</span>))
+   write.csv(d, <span style="color: #2aa198;">'data/preston21long.csv'</span>, row.names = F)
+   
+   <span style="color: #586e75;"># </span><span style="color: #586e75;">check</span>
+   head(d)
+   png(<span style="color: #2aa198;">'reports/ageRates.png'</span>, res = 100)
+   with(subset(d, country == <span style="color: #2aa198;">'Sweden'</span>), plot((deaths/pop)*1000, log = <span style="color: #2aa198;">'y'</span>, type = <span style="color: #2aa198;">'l'</span>, col=<span style="color: #2aa198;">'blue'</span>))
+   with(subset(d, country == <span style="color: #2aa198;">'Kazakhstan'</span>), lines((deaths/pop)*1000, col=<span style="color: #2aa198;">'red'</span>))
+   legend(<span style="color: #2aa198;">'bottomright'</span>, c(<span style="color: #2aa198;">'Kazakhstan'</span>,<span style="color: #2aa198;">'Sweden'</span>), lty = 1, col = c(<span style="color: #2aa198;">'red'</span>,<span style="color: #2aa198;">'blue'</span>))
+   dev.off()
+ 
+   
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> get the stata tutorial</h3>
+<div class="outline-text-3" id="text-6-2">
+
+<p>We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
+downloaded 13-4-12
+</p>
+
+
+
+<pre class="src src-R"><span style="color: #586e75;"># </span><span style="color: #586e75;">dl</span>
+<span style="color: #586e75;">#</span><span style="color: #586e75;">popkahn &lt;- read.dta('http://www.stata-press.com/data/r9/popkahn.dta')</span>
+<span style="color: #586e75;">#</span><span style="color: #586e75;">popkahn        </span>
+        
+<span style="color: #586e75;">#</span><span style="color: #586e75;">kahn &lt;- read.dta('http://www.stata-press.com/data/r9/kahn.dta')</span>
+<span style="color: #586e75;">#</span><span style="color: #586e75;">kahn</span>
+
+  download.file(<span style="color: #2aa198;">'http://www.stata-press.com/data/r9/popkahn.dta'</span>, destfile = <span style="color: #2aa198;">'data/popkahn.dta'</span>, mode = <span style="color: #2aa198;">'wb'</span>)
+
+  download.file(<span style="color: #2aa198;">'http://www.stata-press.com/data/r9/kahn.dta'</span>, destfile = <span style="color: #2aa198;">'data/kahn.dta'</span>, mode = <span style="color: #2aa198;">'wb'</span>)
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Analysis</h2>
+<div class="outline-text-2" id="text-7">
+
+<p>\section{Analysis}
+</p>
+</div>
+
+<div id="outline-container-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> available tools</h3>
+<div class="outline-text-3" id="text-7-1">
+
+
+</div>
+
+<div id="outline-container-7-1-1" class="outline-4">
+<h4 id="sec-7-1-1"><span class="section-number-4">7.1.1</span> epitools</h4>
+<div class="outline-text-4" id="text-7-1-1">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">#######################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name: do-epitools</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">epitools has direct and indirect functions</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">TODO stataCompare</span>
+ 
+<span style="color: #586e75;">##</span><span style="color: #586e75;">From Selvin (2004)</span>
+<span style="color: #586e75;">##</span><span style="color: #586e75;">enter data</span>
+dth60 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> as.numeric(read.table(textConnection(<span style="color: #2aa198;">'141 926 1253 1080 1869 4891 14956 30888 41725 26501 5928'</span>)))
+pop60 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> as.numeric(read.table(textConnection(<span style="color: #2aa198;">'1784033 7065148 15658730 10482916 9939972 10563872 9114202 6850263 4702482 1874619 330915'</span>)))
+dth40 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> as.numeric(read.table(textConnection(<span style="color: #2aa198;">'45 201 320 670 1126 3160 9723 17935 22179 13461 2238'</span>)))
+pop40 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> as.numeric(read.table(textConnection(<span style="color: #2aa198;">'906897 3794573 10003544 10629526 9465330 8249558 7294330</span>
+<span style="color: #2aa198;">5022499 2920220 1019504 142532'</span>)))
+<span style="color: #586e75;">##</span><span style="color: #586e75;">calculate age-specific rates</span>
+rate60 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> dth60/pop60
+rate40 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> dth40/pop40
+<span style="color: #586e75;">#</span><span style="color: #586e75;">create array for display</span>
+tab <span style="color: #268bd2; font-weight: bold;">&lt;-</span> array(c(dth60, pop60, round(rate60*100000,1), dth40, pop40,
+round(rate40*100000,1)),c(11,3,2))
+agelabs <span style="color: #268bd2; font-weight: bold;">&lt;-</span> c(<span style="color: #2aa198;">'&lt;1'</span>, <span style="color: #2aa198;">'1-4'</span>, <span style="color: #2aa198;">'5-14'</span>, <span style="color: #2aa198;">'15-24'</span>, <span style="color: #2aa198;">'25-34'</span>, <span style="color: #2aa198;">'35-44'</span>, <span style="color: #2aa198;">'45-54'</span>,
+<span style="color: #2aa198;">'55-64'</span>, <span style="color: #2aa198;">'65-74'</span>, <span style="color: #2aa198;">'75-84'</span>, <span style="color: #2aa198;">'85+'</span>)
+dimnames(tab) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> list(agelabs,c(<span style="color: #2aa198;">'Deaths'</span>, <span style="color: #2aa198;">'Population'</span>, <span style="color: #2aa198;">'Rate'</span>),
+c(<span style="color: #2aa198;">'1960'</span>, <span style="color: #2aa198;">'1940'</span>))
+tab
+<span style="color: #586e75;">##</span><span style="color: #586e75;">implement direct age standardization using &#8217;ageadjust.direct&#8217;</span>
+dsr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ageadjust.direct(count = dth40, pop = pop40, stdpop = pop60)
+round(100000*dsr, 2) <span style="color: #586e75;">##</span><span style="color: #586e75;">rate per 100,000 per year</span>
+<span style="color: #586e75;">##</span><span style="color: #586e75;">implement indirect age standardization using &#8217;ageadjust.indirect&#8217;</span>
+isr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ageadjust.indirect(count = dth40, pop = pop40,
+stdcount = dth60, stdpop = pop60)
+round(isr$sir, 2) <span style="color: #586e75;">##</span><span style="color: #586e75;">standarized incidence ratio</span>
+round(100000*isr$rate, 1) <span style="color: #586e75;">##</span><span style="color: #586e75;">rate per 100,000 per year </span>
+  
+</pre>
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Direct standardisation</h2>
+<div class="outline-text-2" id="text-8">
+
+
+</div>
+
+<div id="outline-container-8-1" class="outline-3">
+<h3 id="sec-8-1"><span class="section-number-3">8.1</span> dstdize</h3>
+<div class="outline-text-3" id="text-8-1">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">#######################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name: do-dstdize</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">studypops        </span>
+d <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.table(<span style="color: #2aa198;">'http://data.princeton.edu/eco572/datasets/preston21long.dat'</span>, col.names = c(<span style="color: #2aa198;">'country'</span>, <span style="color: #2aa198;">'ageg'</span>, <span style="color: #2aa198;">'pop'</span>, <span style="color: #2aa198;">'deaths'</span>))
+head(d)
+ 
+<span style="color: #586e75;"># </span><span style="color: #586e75;">standard</span>
+standard<span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, <span style="color: #2aa198;">'ageg'</span>, <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(pop=sum(df$pop))))
+
+<span style="color: #586e75;"># </span><span style="color: #586e75;">epitools needs single</span>
+do <span style="color: #268bd2; font-weight: bold;">&lt;-</span> subset(d, country == <span style="color: #2aa198;">'Sweden'</span>)   <span style="color: #586e75;"># </span><span style="color: #586e75;">Kazakhstan</span>
+ageadjust.direct(count=do$deaths, pop=do$pop, stdpop=standard$pop)     
+        
+<span style="color: #268bd2;">rageadjust.direct</span> <span style="color: #268bd2; font-weight: bold;">&lt;-</span> <span style="color: #859900; font-weight: bold;">function</span> (data, count, pop, rate = <span style="color: #b58900;">NULL</span>, stdpop, by, using = <span style="color: #b58900;">NA</span>,print=T, time = <span style="color: #b58900;">NULL</span>, conf.level = 0.95, age = <span style="color: #2aa198;">'age'</span>){
+
+<span style="color: #859900; font-weight: bold;">if</span> (!<span style="color: #268bd2; font-weight: bold;">require</span>(plyr)) install.packages(<span style="color: #2aa198;">'plyr'</span>, repos=<span style="color: #2aa198;">'http://cran.csiro.au'</span>); <span style="color: #268bd2; font-weight: bold;">require</span>(plyr)
+d <span style="color: #268bd2; font-weight: bold;">&lt;-</span> data
+studysite <span style="color: #268bd2; font-weight: bold;">&lt;-</span> by
+standard <span style="color: #268bd2; font-weight: bold;">&lt;-</span> using
+agevar <span style="color: #268bd2; font-weight: bold;">&lt;-</span> age
+
+<span style="color: #859900; font-weight: bold;">if</span> (missing(count) == <span style="color: #b58900;">TRUE</span> &amp; !missing(pop) == <span style="color: #b58900;">TRUE</span> &amp; is.null(rate) == <span style="color: #b58900;">TRUE</span>) {
+d$count <span style="color: #268bd2; font-weight: bold;">&lt;-</span> d[,rate] * d[,pop]
+}
+<span style="color: #859900; font-weight: bold;">if</span> (missing(pop) == <span style="color: #b58900;">TRUE</span> &amp; !missing(count) == <span style="color: #b58900;">TRUE</span> &amp; is.null(rate) == <span style="color: #b58900;">TRUE</span>) {
+d$pop <span style="color: #268bd2; font-weight: bold;">&lt;-</span> d[,count]/d[,rate]
+}
+<span style="color: #859900; font-weight: bold;">if</span> (is.null(rate) == <span style="color: #b58900;">TRUE</span> &amp; !missing(count) == <span style="color: #b58900;">TRUE</span> &amp; !missing(pop) == <span style="color: #b58900;">TRUE</span>) {
+d$rate <span style="color: #268bd2; font-weight: bold;">&lt;-</span> d[,count]/d[,pop]
+}
+alpha <span style="color: #268bd2; font-weight: bold;">&lt;-</span> 1 - conf.level
+
+<span style="color: #859900; font-weight: bold;">if</span>(is.null(time)){
+        observed<span style="color: #268bd2; font-weight: bold;">&lt;-</span>ddply(d, c(studysite), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+        standard$stdwt <span style="color: #268bd2; font-weight: bold;">&lt;-</span> standard[,stdpop]/sum(standard[,stdpop])
+        d<span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(d,standard, by = age) 
+        dsr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, by, <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(dsr = sum(df$stdwt * df$rate))))
+        names(d) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> gsub(paste(pop,<span style="color: #2aa198;">'.x'</span>,sep=<span style="color: #2aa198;">''</span>), pop, names(d))
+        dsr.var <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, by, <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(dsr.var = sum((df$stdwt^2) * (df[,count]/df[,pop]^2))))) 
+        wm <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, by, <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(wm=max(df$stdwt/df[,pop]))))
+        dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, dsr.var, by = by)
+        dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, wm, by = by)
+
+        gamma.lci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(dsr, by, <span style="color: #859900; font-weight: bold;">function</span>(df) 
+                <span style="color: #859900; font-weight: bold;">return</span>(c(lci=qgamma(alpha/2, shape = (df$dsr^2)/df$dsr.var, scale = df$dsr.var/df$dsr)
+                )))
+        gamma.uci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(dsr, by, <span style="color: #859900; font-weight: bold;">function</span>(df) 
+                <span style="color: #859900; font-weight: bold;">return</span>(c(uci=qgamma(1 - alpha/2, shape = ((df$dsr + df$wm)^2)/(df$dsr.var + df$wm^2), scale = (df$dsr.var + df$wm^2)/(df$dsr + df$wm))
+                )))
+        dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, gamma.lci, by = by)
+        dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, gamma.uci, by = by)
+        names(dsr) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> gsub(<span style="color: #2aa198;">'dsr'</span>, <span style="color: #2aa198;">'adj.rate'</span>, names(dsr)) 
+        outdat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(observed,dsr[,c(<span style="color: #2aa198;">'country'</span>,<span style="color: #2aa198;">'adj.rate'</span>,<span style="color: #2aa198;">'lci'</span>,<span style="color: #2aa198;">'uci'</span>)])
+} <span style="color: #859900; font-weight: bold;">else</span> {
+observed<span style="color: #268bd2; font-weight: bold;">&lt;-</span>ddply(d, c(studysite, time), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+standard$stdwt <span style="color: #268bd2; font-weight: bold;">&lt;-</span> standard[,stdpop]/sum(standard[,stdpop])
+d<span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(d,standard, by = age) 
+dsr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, c(by, time), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(dsr = sum(df$stdwt * df$rate))))
+names(d) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> gsub(paste(pop,<span style="color: #2aa198;">'.x'</span>,sep=<span style="color: #2aa198;">''</span>), pop, names(d))
+dsr.var <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, c(by, time), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(dsr.var = sum((df$stdwt^2) * (df[,count]/df[,pop]^2))))) 
+wm <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, c(by, time), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(wm=max(df$stdwt/df[,pop]))))
+dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, dsr.var, by = c(by, time))
+dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, wm, by = c(by, time))
+
+gamma.lci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(dsr, c(by, time), <span style="color: #859900; font-weight: bold;">function</span>(df) 
+        <span style="color: #859900; font-weight: bold;">return</span>(c(lci=qgamma(alpha/2, shape = (df$dsr^2)/df$dsr.var, scale = df$dsr.var/df$dsr)
+        )))
+gamma.uci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(dsr, c(by, time), <span style="color: #859900; font-weight: bold;">function</span>(df) 
+        <span style="color: #859900; font-weight: bold;">return</span>(c(uci=qgamma(1 - alpha/2, shape = ((df$dsr + df$wm)^2)/(df$dsr.var + df$wm^2), scale = (df$dsr.var + df$wm^2)/(df$dsr + df$wm))
+        )))
+dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, gamma.lci, by = c(by, time))
+dsr<span style="color: #268bd2; font-weight: bold;">&lt;-</span>merge(dsr, gamma.uci, by = c(by, time))
+names(dsr) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> gsub(<span style="color: #2aa198;">'dsr'</span>, <span style="color: #2aa198;">'adj.rate'</span>, names(dsr)) 
+outdat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(observed,dsr[,c(by, time,<span style="color: #2aa198;">'adj.rate'</span>,<span style="color: #2aa198;">'lci'</span>,<span style="color: #2aa198;">'uci'</span>)])
+
+}
+<span style="color: #859900; font-weight: bold;">return</span>(outdat)          
+}
+
+rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, count=<span style="color: #2aa198;">'deaths'</span>, pop=<span style="color: #2aa198;">'pop'</span>, stdpop=<span style="color: #2aa198;">'pop'</span>, using=standard, by = <span style="color: #2aa198;">'country'</span>)     
+
+d$day <span style="color: #268bd2; font-weight: bold;">&lt;-</span> c(rep(1,19),rep(2,19))
+d$studysite <span style="color: #268bd2; font-weight: bold;">&lt;-</span> <span style="color: #2aa198;">'allTheSame'</span>
+rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, count=<span style="color: #2aa198;">'deaths'</span>, pop=<span style="color: #2aa198;">'pop'</span>, stdpop=<span style="color: #2aa198;">'pop'</span>, using=standard, by = <span style="color: #2aa198;">'studysite'</span>, time = <span style="color: #2aa198;">'day'</span>)     
+
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2" class="outline-3">
+<h3 id="sec-8-2"><span class="section-number-3">8.2</span> directRates</h3>
+<div class="outline-text-3" id="text-8-2">
+
+
+</div>
+
+<div id="outline-container-8-2-1" class="outline-4">
+<h4 id="sec-8-2-1"><span class="section-number-4">8.2.1</span> func</h4>
+<div class="outline-text-4" id="text-8-2-1">
+
+<ul>
+<li id="sec-8-2-1-1">func-directRates<br/>
+
+
+
+
+
+<pre class="src src-R"><span style="color: #268bd2;">directRates</span> <span style="color: #268bd2; font-weight: bold;">&lt;-</span> <span style="color: #859900; font-weight: bold;">function</span>(analyte, standard_pop, stratify.var = c(<span style="color: #2aa198;">'dthdate'</span>)){       
+ <span style="color: #586e75;">#  </span><span style="color: #586e75;">analyte = time series of outcomes abd populations, by age and sex</span>
+ <span style="color: #586e75;">#  </span><span style="color: #586e75;">standard_pop = standard</span>
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">stratify.var = c('dthdate','sex') # by sex if wanted age rates for each sex, could also be by zone?</span>
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">TODO </span>
+ <span style="color: #586e75;">#  </span><span style="color: #586e75;">make this work with multiple study populations?</span>
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">if study_pop = NA then will check if multiple study zones, will use the total population, if by time then will use mid point?</span>
+ <span style="color: #859900; font-weight: bold;">if</span>(!<span style="color: #268bd2; font-weight: bold;">require</span>(plyr)) install.packages(<span style="color: #2aa198;">'plyr'</span>,repos=<span style="color: #2aa198;">'http://cran.csiro.au'</span>); <span style="color: #268bd2; font-weight: bold;">require</span>(plyr)
+
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">step 1 get the standard population</span>
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">TODO generalise to the optional inclusion of a standard</span>
+
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">step 2 for each time step calc the age specific rates in study, apply to standard pops</span>
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">need to merge        </span>
+ analyte <span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(analyte, standard_pop, all.x = T) <span style="color: #586e75;">#</span><span style="color: #586e75;">, by.x= 'age', by.y ='age')</span>
+ 
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">get the daily age specific rates of the ROS and apply to standard</span>
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">this is the expected number of deaths if the standard had had the same health experience as the study</span>
+ analyte$allcause_asr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> (analyte$allcause/analyte$pop) * analyte$standard_pop
+ analyte$resp_asr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> (analyte$resp/analyte$pop) * analyte$standard_pop
+ analyte$cvd_asr <span style="color: #268bd2; font-weight: bold;">&lt;-</span> (analyte$cvd/analyte$pop) * analyte$standard_pop
+
+        
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">step 3 sum expected deaths over age, stratify by stratify.var      </span>
+ dailystandard <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(analyte, stratify.var, <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(
+  standard_pop_summed = sum(df$standard_pop),
+  allcause_asr_summed = sum(df$allcause_asr),
+  resp_asr_summed = sum(df$resp_asr), 
+  cvd_asr_summed = sum(df$cvd_asr))))
+
+ <span style="color: #586e75;"># </span><span style="color: #586e75;">and divide by standard population x 100,000 </span>
+ dailystandard$allcause_stndrate <span style="color: #268bd2; font-weight: bold;">&lt;-</span> (dailystandard$allcause_asr_summed/dailystandard$standard_pop_summed) * 100000
+ dailystandard$resp_stndrate <span style="color: #268bd2; font-weight: bold;">&lt;-</span> (dailystandard$resp_asr_summed/dailystandard$standard_pop_summed) * 100000
+ dailystandard$cvd_stndrate <span style="color: #268bd2; font-weight: bold;">&lt;-</span> (dailystandard$cvd_asr_summed/dailystandard$standard_pop_summed) * 100000
+
+ <span style="color: #859900; font-weight: bold;">return</span>(dailystandard)
+ }
+
+</pre>
+
+
+</li>
+</ul>
+</div>
+
+</div>
+
+<div id="outline-container-8-2-2" class="outline-4">
+<h4 id="sec-8-2-2"><span class="section-number-4">8.2.2</span> <span class="todo TODO">TODO</span> load</h4>
+<div class="outline-text-4" id="text-8-2-2">
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2-3" class="outline-4">
+<h4 id="sec-8-2-3"><span class="section-number-4">8.2.3</span> <span class="todo TODO">TODO</span> clean</h4>
+<div class="outline-text-4" id="text-8-2-3">
+
+</div>
+
+</div>
+
+<div id="outline-container-8-2-4" class="outline-4">
+<h4 id="sec-8-2-4"><span class="section-number-4">8.2.4</span> <span class="todo TODO">TODO</span> do</h4>
+<div class="outline-text-4" id="text-8-2-4">
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Indirect standardisation</h2>
+<div class="outline-text-2" id="text-9">
+
+
+</div>
+
+<div id="outline-container-9-1" class="outline-3">
+<h3 id="sec-9-1"><span class="section-number-3">9.1</span> istdize</h3>
+<div class="outline-text-3" id="text-9-1">
+
+<p>We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
+</p>
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">#######################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name: do-istdize</span>
+
+popkahn <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.dta(<span style="color: #2aa198;">'http://www.stata-press.com/data/r9/popkahn.dta'</span>)
+popkahn        
+        
+kahn <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.dta(<span style="color: #2aa198;">'http://www.stata-press.com/data/r9/kahn.dta'</span>)
+kahn
+
+
+
+<span style="color: #586e75;">#</span><span style="color: #586e75;">for(st in c('California', 'Maine')){</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">st &lt;- 'Maine'</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">print(st)        </span>
+do <span style="color: #268bd2; font-weight: bold;">&lt;-</span> subset(kahn, state == <span style="color: #2aa198;">'Maine'</span>)   
+<span style="color: #586e75;"># </span><span style="color: #586e75;">note needs counts for each age, but Main only has death in first row</span>
+do$death <span style="color: #268bd2; font-weight: bold;">&lt;-</span> do$death[1]        
+print(ageadjust.indirect(count=do$death/length(do$death), pop=do$population, stdcount = popkahn$deaths, stdpop=popkahn$population))
+<span style="color: #586e75;">#</span><span style="color: #586e75;">}</span>
+
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-9-2" class="outline-3">
+<h3 id="sec-9-2"><span class="section-number-3">9.2</span> rewrite with studypop and time</h3>
+<div class="outline-text-3" id="text-9-2">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">#######################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name: do-istdize-with-pop-and-time</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">rewrite with by studypop and time</span>
+
+<span style="color: #268bd2;">rageadjust.indirect</span> <span style="color: #268bd2; font-weight: bold;">&lt;-</span> <span style="color: #859900; font-weight: bold;">function</span> (data, count, pop, using, stdcount, stdpop, stdrate = <span style="color: #b58900;">NULL</span>, conf.level = 0.95, by, time = <span style="color: #b58900;">NULL</span>){
+        <span style="color: #859900; font-weight: bold;">if</span> (!<span style="color: #268bd2; font-weight: bold;">require</span>(plyr)) install.packages(<span style="color: #2aa198;">'plyr'</span>, repos=<span style="color: #2aa198;">'http://cran.csiro.au'</span>); <span style="color: #268bd2; font-weight: bold;">require</span>(plyr)
+        <span style="color: #586e75;"># </span><span style="color: #586e75;">count can either be age specific if known for study pops or a total deaths if unknown (in which case should be a fraction that sums to the total)</span>
+        d <span style="color: #268bd2; font-weight: bold;">&lt;-</span> data
+        studysite <span style="color: #268bd2; font-weight: bold;">&lt;-</span> by
+        standard <span style="color: #268bd2; font-weight: bold;">&lt;-</span> using
+
+        <span style="color: #586e75;"># </span><span style="color: #586e75;">if both have a col called death and population the combined names will have.x or .y so rename first</span>
+        names(standard) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> gsub(stdcount, paste(stdcount,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>), names(standard))
+        names(standard) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> gsub(stdpop, paste(stdpop,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>), names(standard))
+        d <span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(d,standard, all.x=T, by = <span style="color: #2aa198;">'age'</span>)
+
+        zv <span style="color: #268bd2; font-weight: bold;">&lt;-</span> qnorm(0.5 * (1 + conf.level))
+
+        <span style="color: #859900; font-weight: bold;">if</span>(is.null(time)){
+                observed<span style="color: #268bd2; font-weight: bold;">&lt;-</span>ddply(d, c(studysite), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+                <span style="color: #586e75;"># </span><span style="color: #586e75;">NOT DONE YET</span>
+                <span style="color: #586e75;"># </span><span style="color: #586e75;">if (is.null(stdrate) == TRUE &amp; length(stdcount) &gt; 1 &amp; length(stdpop &gt; </span>
+                        <span style="color: #586e75;"># </span><span style="color: #586e75;">1)) {</span>
+                        <span style="color: #586e75;"># </span><span style="color: #586e75;">stdrate &lt;- stdcount/stdpop</span>
+                <span style="color: #586e75;"># </span><span style="color: #586e75;">}</span>
+                expected <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, c(studysite), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(stdcrate=sum(df[, paste(stdcount,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)])/sum(df[,paste(stdpop,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)]), expected = sum((df[, paste(stdcount,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)]/df[,paste(stdpop,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)]) * df[,pop])))) 
+        } <span style="color: #859900; font-weight: bold;">else</span> {
+
+                observed<span style="color: #268bd2; font-weight: bold;">&lt;-</span>ddply(d, c(studysite, time), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(observed = sum(df[,count]), pop = sum(df[,pop]), crude.rate = sum(df[,count])/sum(df[,pop])))) 
+                expected <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ddply(d, c(studysite, time), <span style="color: #859900; font-weight: bold;">function</span>(df) <span style="color: #859900; font-weight: bold;">return</span>(c(stdcrate=sum(df[, paste(stdcount,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)])/sum(df[,paste(stdpop,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)]), expected = sum((df[, paste(stdcount,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)]/df[,paste(stdpop,<span style="color: #2aa198;">'Std'</span>,sep=<span style="color: #2aa198;">''</span>)]) * df[,pop])))) 
+
+        }
+
+        outdat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> merge(observed, expected)
+        outdat$sir <span style="color: #268bd2; font-weight: bold;">&lt;-</span> outdat$observed/outdat$expected
+        outdat$logsir.lci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> log(outdat$sir) - zv * (1/sqrt(outdat$observed))
+        outdat$logsir.uci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> log(outdat$sir) + zv * (1/sqrt(outdat$observed))
+        outdat$sir.lci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> exp(outdat$logsir.lci)
+        outdat$sir.uci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> exp(outdat$logsir.uci)
+        outdat$adj.rate <span style="color: #268bd2; font-weight: bold;">&lt;-</span> outdat$sir * outdat$stdcrate
+        outdat$adj.rate.lci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> outdat$sir.lci * outdat$stdcrate
+        outdat$adj.rate.uci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> outdat$sir.uci * outdat$stdcrate
+        <span style="color: #859900; font-weight: bold;">if</span>(is.null(time)){
+        outdat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> outdat[,c(studysite,<span style="color: #2aa198;">'observed'</span>,<span style="color: #2aa198;">'expected'</span>,<span style="color: #2aa198;">'sir'</span>,<span style="color: #2aa198;">'sir.lci'</span>,<span style="color: #2aa198;">'sir.uci'</span>,<span style="color: #2aa198;">'crude.rate'</span>,<span style="color: #2aa198;">'adj.rate'</span>,<span style="color: #2aa198;">'adj.rate.lci'</span>,<span style="color: #2aa198;">'adj.rate.uci'</span>)]
+        } <span style="color: #859900; font-weight: bold;">else</span> {
+        outdat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> outdat[,c(studysite,time,<span style="color: #2aa198;">'observed'</span>,<span style="color: #2aa198;">'expected'</span>,<span style="color: #2aa198;">'sir'</span>,<span style="color: #2aa198;">'sir.lci'</span>,<span style="color: #2aa198;">'sir.uci'</span>,<span style="color: #2aa198;">'crude.rate'</span>,<span style="color: #2aa198;">'adj.rate'</span>,<span style="color: #2aa198;">'adj.rate.lci'</span>,<span style="color: #2aa198;">'adj.rate.uci'</span>)]
+        }        
+        <span style="color: #859900; font-weight: bold;">return</span>(outdat)
+}
+
+
+<span style="color: #586e75;"># </span><span style="color: #586e75;">standard</span>
+popkahn <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.dta(<span style="color: #2aa198;">'http://www.stata-press.com/data/r9/popkahn.dta'</span>)
+popkahn        
+<span style="color: #586e75;"># </span><span style="color: #586e75;">studypops        </span>
+kahn <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.dta(<span style="color: #2aa198;">'http://www.stata-press.com/data/r9/kahn.dta'</span>)
+kahn
+<span style="color: #586e75;"># </span><span style="color: #586e75;">note needs counts for each age, but Main only has death in first row     </span>
+kahn[kahn$state == <span style="color: #2aa198;">'Maine'</span>,<span style="color: #2aa198;">'death'</span>] <span style="color: #268bd2; font-weight: bold;">&lt;-</span> 11051
+kahn
+<span style="color: #586e75;"># </span><span style="color: #586e75;">need to create the fraction of deaths in the age groups for this example to work</span>
+kahn$count <span style="color: #268bd2; font-weight: bold;">&lt;-</span> kahn$death/(length(kahn$death)/length(table(kahn$state)))
+
+rageadjust.indirect(data=kahn, by = <span style="color: #2aa198;">'state'</span>, time = <span style="color: #b58900;">NULL</span>, using = popkahn, count=<span style="color: #2aa198;">'count'</span>, pop=<span style="color: #2aa198;">'population'</span>, stdcount = <span style="color: #2aa198;">'deaths'</span>, stdpop=<span style="color: #2aa198;">'population'</span>)
+
+
+<span style="color: #586e75;"># </span><span style="color: #586e75;">check orig</span>
+do <span style="color: #268bd2; font-weight: bold;">&lt;-</span> subset(kahn, state == <span style="color: #2aa198;">'Maine'</span>)   
+
+ageadjust.indirect(count=do$death/length(do$death), pop=do$population, stdcount = popkahn$deaths, stdpop=popkahn$population)
+
+rage <span style="color: #268bd2; font-weight: bold;">&lt;-</span> rageadjust.indirect(data=do, by = <span style="color: #2aa198;">'state'</span>, time = <span style="color: #b58900;">NULL</span>, using = popkahn, count=<span style="color: #2aa198;">'count'</span>, pop=<span style="color: #2aa198;">'population'</span>, stdcount = <span style="color: #2aa198;">'deaths'</span>, stdpop=<span style="color: #2aa198;">'population'</span>)
+
+as.data.frame(t(rage[1,]))
+
+
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Adjustment using regression</h2>
+<div class="outline-text-2" id="text-10">
+
+</div>
+
+</div>
+
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Control for secular trend</h2>
+<div class="outline-text-2" id="text-11">
+
+</div>
+
+</div>
+
+<div id="outline-container-12" class="outline-2">
+<h2 id="sec-12"><span class="section-number-2">12</span> Uses in spatial epidemiology</h2>
+<div class="outline-text-2" id="text-12">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-13" class="outline-2">
+<h2 id="sec-13"><span class="section-number-2">13</span> Indirect standardisation controlling for spatial correlation</h2>
+<div class="outline-text-2" id="text-13">
+
+
+<ul>
+<li>We'll use the example of the Conditional Autoregressive (CAR) model of Lip cancer in Scotland.
+</li>
+<li>Hierarchical Modeling and Analysis for Spatial Data (ISBN: 1-58488-410-X), by S. Banerjee, B.P. Carlin and A.E. Gelfand, Boca Raton, FL: Chapman and Hall/CRC Press, 2004. 
+</li>
+<li>Lipsbrad.odc, the full WinBUGS code for the Scottish lip cancer example (page 167) <a href="http://www.biostat.umn.edu/~brad/data2.html">http://www.biostat.umn.edu/~brad/data2.html</a>
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> Regression approach to spatial rates</h2>
+<div class="outline-text-2" id="text-14">
+
+<p>Mantel and Stark (1968), with reference to an alternative approach to indirect age standardisation. This is useful when the data are being internally standardised (using the data themselves as the standard) 
+and where there is potential confounding. The general approach is to use a regression model with the variable to be standardised (eg age) and with the stratification variable which is potentially confounded (eg area). 
+The standardised rates by the stratification variable can then be found from the regression predictions scaled to the observed total. Note that this approach requires non-zero cells for each stratum (eg at least one event per area).
+</p>
+<ul>
+<li>Other references: Breslow and Day (1975), Esteve et al. (1994, p90-92).
+</li>
+<li>see Mark's SAS implementation at keynote tools/Statistical Rules of Thumb/standardised incidence ratios/regression approach 574
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-15" class="outline-2">
+<h2 id="sec-15"><span class="section-number-2">15</span> Weight by inverse of variance</h2>
+<div class="outline-text-2" id="text-15">
+
+<p>In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
+\cite{Boyle} (page 141).
+</p></div>
+
+</div>
+
+<div id="outline-container-16" class="outline-2">
+<h2 id="sec-16"><span class="section-number-2">16</span> <span class="todo TODO">TODO</span> References</h2>
+<div class="outline-text-2" id="text-16">
+
+
+
+</div>
+</div>
+</div>
+
+</body>
+</html>
