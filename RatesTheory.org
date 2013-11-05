@@ -1,5 +1,5 @@
 # ~/projects/RatesTheory
-#+TITLE:Rates Theory 
+#+TITLE:Rates, Standardisation and Adjustment
 #+AUTHOR: Ivan Hanigan
 #+email: ivan.hanigan@anu.edu.au
 #+LaTeX_CLASS: article
@@ -13,6 +13,8 @@
   require(ProjectTemplate)
   load.project()
 #+end_src
+* COMMENT TODO-list
+** TODO get from /home/ivan/Dropbox/projects/IvanPhD/Papers/RatesAndStandardisation
 * COMMENT init
 ** init
 #+name:conf
