@@ -301,7 +301,7 @@ data_tables: off
 The aim of this project is to explore the methodological issues of rates, standardisation and adjustment in regression models.
 This topic is relevant in epidemiology and demography (and most human sciences).
 
-The demonstration will utilize the R package \emph{ProjectTemplate}.
+The demonstration will utilize the R codes and data from https://github.com/ivanhanigan/RatesTheory
 * Theoretical background
 Different age or sex structures of study populations can be the reason for important differences between the health outcomes of the populations that need to be accounted for when assessing other putative causal relationships such as socio-economic status or the physical environment. 
 
