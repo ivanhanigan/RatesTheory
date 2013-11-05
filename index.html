@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Rates, Standardisation and Adjustment"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-11-06T09:37+1100"/>
+<meta name="generated" content="2013-11-06T09:56+1100"/>
 <meta name="author" content="Ivan Hanigan"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -123,6 +123,7 @@ for the JavaScript code in this tag.
 
 
 
+
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
@@ -146,31 +147,46 @@ for the JavaScript code in this tag.
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-8">8 Direct standardisation</a>
+<li><a href="#sec-8">8 Age Specific Rates</a></li>
+<li><a href="#sec-9">9 Crude Age Standardization</a>
 <ul>
-<li><a href="#sec-8-1">8.1 dstdize</a></li>
-<li><a href="#sec-8-2">8.2 directRates</a>
+<li>
 <ul>
-<li><a href="#sec-8-2-1">8.2.1 func</a></li>
-<li><a href="#sec-8-2-2">8.2.2 load</a></li>
-<li><a href="#sec-8-2-3">8.2.3 clean</a></li>
-<li><a href="#sec-8-2-4">8.2.4 do</a></li>
+<li><a href="#sec-9-1">9.1 crude-pysal-code</a></li>
+<li><a href="#sec-9-2">9.2 pysal-crd-run-code</a></li>
+<li><a href="#sec-9-3">9.3 Critique</a></li>
+<li><a href="#sec-9-4">9.4 crude-R-code</a></li>
 </ul></li>
 </ul>
 </li>
-<li><a href="#sec-9">9 Indirect standardisation</a>
+<li><a href="#sec-10">10 Direct Age standardisation</a>
 <ul>
-<li><a href="#sec-9-1">9.1 istdize</a></li>
-<li><a href="#sec-9-2">9.2 rewrite with studypop and time</a></li>
+<li><a href="#sec-10-1">10.1 dstdize</a></li>
+<li><a href="#sec-10-2">10.2 directRates</a>
+<ul>
+<li><a href="#sec-10-2-1">10.2.1 func</a></li>
+<li><a href="#sec-10-2-2">10.2.2 load</a></li>
+<li><a href="#sec-10-2-3">10.2.3 clean</a></li>
+<li><a href="#sec-10-2-4">10.2.4 do</a></li>
 </ul>
 </li>
-<li><a href="#sec-10">10 Adjustment using regression</a></li>
-<li><a href="#sec-11">11 Control for secular trend</a></li>
-<li><a href="#sec-12">12 Uses in spatial epidemiology</a></li>
-<li><a href="#sec-13">13 Indirect standardisation controlling for spatial correlation</a></li>
-<li><a href="#sec-14">14 Regression approach to spatial rates</a></li>
-<li><a href="#sec-15">15 Weight by inverse of variance</a></li>
-<li><a href="#sec-16">16 References</a></li>
+<li><a href="#sec-10-3">10.3 direct-pysal-code</a></li>
+</ul>
+</li>
+<li><a href="#sec-11">11 Indirect Age standardisation</a>
+<ul>
+<li><a href="#sec-11-1">11.1 istdize</a></li>
+<li><a href="#sec-11-2">11.2 rewrite with studypop and time</a></li>
+<li><a href="#sec-11-3">11.3 indirect-pysal-code</a></li>
+</ul>
+</li>
+<li><a href="#sec-12">12 Adjustment using regression</a></li>
+<li><a href="#sec-13">13 Control for secular trend</a></li>
+<li><a href="#sec-14">14 Uses in spatial epidemiology</a></li>
+<li><a href="#sec-15">15 Indirect standardisation controlling for spatial correlation</a></li>
+<li><a href="#sec-16">16 Regression approach to spatial rates</a></li>
+<li><a href="#sec-17">17 Weight by inverse of variance</a></li>
+<li><a href="#sec-18">18 References</a></li>
 </ul>
 </div>
 </div>
@@ -370,15 +386,146 @@ round(100000*isr$rate, 1) <span style="color: #586e75;">##</span><span style="co
 </div>
 
 <div id="outline-container-8" class="outline-2">
-<h2 id="sec-8"><span class="section-number-2">8</span> Direct standardisation</h2>
+<h2 id="sec-8"><span class="section-number-2">8</span> Age Specific Rates</h2>
 <div class="outline-text-2" id="text-8">
+
+</div>
+
+</div>
+
+<div id="outline-container-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Crude Age Standardization</h2>
+<div class="outline-text-2" id="text-9">
+
+<p>In this approach, the rate for an area is simply the sum of age-specific rates weighted by the ratios of each age group in the total population.
+</p>
+<p>
+To obtain the rates based on this approach, we first need to create two variables that correspond to event counts and population values, respectively.
+</p>
+</div>
+
+<div id="outline-container-9-1" class="outline-4">
+<h4 id="sec-9-1"><span class="section-number-4">9.1</span> crude-pysal-code</h4>
+<div class="outline-text-4" id="text-9-1">
+
+<p>The following is paraphrased from <a href="http://pythonhosted.org/PySAL/users/tutorials/smoothing.html#age-standardization-in-pysal">http://pythonhosted.org/PySAL/users/tutorials/smoothing.html#age-standardization-in-pysal</a>
+</p>
+<p>
+To apply the crude age standardization in pysal, we need to make the following function call (after first creating some test data):
+</p>
+
+
+
+<pre class="src src-python"><span style="color: #859900; font-weight: bold;">import</span> numpy <span style="color: #859900; font-weight: bold;">as</span> np
+<span style="color: #859900; font-weight: bold;">from</span> pysal.esda <span style="color: #859900; font-weight: bold;">import</span> smoothing <span style="color: #859900; font-weight: bold;">as</span> sm
+<span style="color: #268bd2;">e</span> = np.array([30, 25, 25, 15, 33, 21, 30, 20])
+<span style="color: #268bd2;">b</span> = np.array([100, 100, 110, 90, 100, 90, 110, 90])  
+<span style="color: #268bd2;">out</span> = sm.crude_age_standardization(e, b, 2)
+<span style="color: #859900; font-weight: bold;">print</span> out
+</pre>
 
 
 </div>
 
-<div id="outline-container-8-1" class="outline-3">
-<h3 id="sec-8-1"><span class="section-number-3">8.1</span> dstdize</h3>
-<div class="outline-text-3" id="text-8-1">
+</div>
+
+<div id="outline-container-9-2" class="outline-4">
+<h4 id="sec-9-2"><span class="section-number-4">9.2</span> pysal-crd-run-code</h4>
+<div class="outline-text-4" id="text-9-2">
+
+
+
+
+<pre class="src src-sh">python pysal-crd.py
+</pre>
+
+
+
+
+<p>
+In the function call above, the last argument indicates the number of area units. 
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" />
+</colgroup>
+<tbody>
+<tr><td class="left">array([ 0.2375    ,  0.26666667])</td></tr>
+</tbody>
+</table>
+
+
+<p>
+The outcome in the second line shows that the age-standardized rates for two areas are about 0.24 and 0.27, respectively.
+</p>
+<p>
+Each set of numbers should include n by h elements where n and h are the number of areal units and the number of age groups. In the above example there are two regions with 4 age groups. Age groups are identical across regions. The first four elements in b represent the populations of 4 age groups in the first region, and the last four elements the populations of the same age groups in the second region.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-9-3" class="outline-4">
+<h4 id="sec-9-3"><span class="section-number-4">9.3</span> Critique</h4>
+<div class="outline-text-4" id="text-9-3">
+
+<ul>
+<li>The requirement to specify number of areas is silly (area-code is a common dimension of such datasets)
+</li>
+<li>Does this take matrices or pandas dataframes?  Health data usually are structured in tables.
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-9-4" class="outline-4">
+<h4 id="sec-9-4"><span class="section-number-4">9.4</span> crude-R-code</h4>
+<div class="outline-text-4" id="text-9-4">
+
+<p>The same thing is trivial in R.  But this time we'll take a data.frame of cases and populations from two areas rather than seperate vectors, which is a more common way for health data to be arranged. 
+</p>
+
+
+
+<pre class="src src-R"><span style="color: #586e75;"># </span><span style="color: #586e75;">func</span>
+<span style="color: #268bd2; font-weight: bold;">require</span>(plyr)
+<span style="color: #586e75;"># </span><span style="color: #586e75;">load</span>
+df <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.table(textConnection(
+<span style="color: #2aa198;">"a  e   b</span>
+<span style="color: #2aa198;">a 30 100</span>
+<span style="color: #2aa198;">a 25 100</span>
+<span style="color: #2aa198;">a 25 110</span>
+<span style="color: #2aa198;">a 15  90</span>
+<span style="color: #2aa198;">b 33 100</span>
+<span style="color: #2aa198;">b 21  90</span>
+<span style="color: #2aa198;">b 30 110</span>
+<span style="color: #2aa198;">b 20  90"</span>
+), sep = <span style="color: #2aa198;">""</span>, header = T)
+<span style="color: #586e75;"># </span><span style="color: #586e75;">check</span>
+str(df)
+<span style="color: #586e75;"># </span><span style="color: #586e75;">do</span>
+ddply(df, <span style="color: #2aa198;">'a'</span>, summarise, counts = sum(e), pop = sum(b), rate = sum(e)/sum(b))
+
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-10" class="outline-2">
+<h2 id="sec-10"><span class="section-number-2">10</span> Direct Age standardisation</h2>
+<div class="outline-text-2" id="text-10">
+
+
+</div>
+
+<div id="outline-container-10-1" class="outline-3">
+<h3 id="sec-10-1"><span class="section-number-3">10.1</span> dstdize</h3>
+<div class="outline-text-3" id="text-10-1">
 
 
 
@@ -475,19 +622,19 @@ rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, co
 
 </div>
 
-<div id="outline-container-8-2" class="outline-3">
-<h3 id="sec-8-2"><span class="section-number-3">8.2</span> directRates</h3>
-<div class="outline-text-3" id="text-8-2">
+<div id="outline-container-10-2" class="outline-3">
+<h3 id="sec-10-2"><span class="section-number-3">10.2</span> directRates</h3>
+<div class="outline-text-3" id="text-10-2">
 
 
 </div>
 
-<div id="outline-container-8-2-1" class="outline-4">
-<h4 id="sec-8-2-1"><span class="section-number-4">8.2.1</span> func</h4>
-<div class="outline-text-4" id="text-8-2-1">
+<div id="outline-container-10-2-1" class="outline-4">
+<h4 id="sec-10-2-1"><span class="section-number-4">10.2.1</span> func</h4>
+<div class="outline-text-4" id="text-10-2-1">
 
 <ul>
-<li id="sec-8-2-1-1">func-directRates<br/>
+<li id="sec-10-2-1-1">func-directRates<br/>
 
 
 
@@ -540,43 +687,59 @@ rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, co
 
 </div>
 
-<div id="outline-container-8-2-2" class="outline-4">
-<h4 id="sec-8-2-2"><span class="section-number-4">8.2.2</span> <span class="todo TODO">TODO</span> load</h4>
-<div class="outline-text-4" id="text-8-2-2">
+<div id="outline-container-10-2-2" class="outline-4">
+<h4 id="sec-10-2-2"><span class="section-number-4">10.2.2</span> <span class="todo TODO">TODO</span> load</h4>
+<div class="outline-text-4" id="text-10-2-2">
 
 </div>
 
 </div>
 
-<div id="outline-container-8-2-3" class="outline-4">
-<h4 id="sec-8-2-3"><span class="section-number-4">8.2.3</span> <span class="todo TODO">TODO</span> clean</h4>
-<div class="outline-text-4" id="text-8-2-3">
+<div id="outline-container-10-2-3" class="outline-4">
+<h4 id="sec-10-2-3"><span class="section-number-4">10.2.3</span> <span class="todo TODO">TODO</span> clean</h4>
+<div class="outline-text-4" id="text-10-2-3">
 
 </div>
 
 </div>
 
-<div id="outline-container-8-2-4" class="outline-4">
-<h4 id="sec-8-2-4"><span class="section-number-4">8.2.4</span> <span class="todo TODO">TODO</span> do</h4>
-<div class="outline-text-4" id="text-8-2-4">
+<div id="outline-container-10-2-4" class="outline-4">
+<h4 id="sec-10-2-4"><span class="section-number-4">10.2.4</span> <span class="todo TODO">TODO</span> do</h4>
+<div class="outline-text-4" id="text-10-2-4">
 
 
 </div>
 </div>
+
+</div>
+
+<div id="outline-container-10-3" class="outline-3">
+<h3 id="sec-10-3"><span class="section-number-3">10.3</span> direct-pysal-code</h3>
+<div class="outline-text-3" id="text-10-3">
+
+<p>Direct age standardization is a variation of the crude age standardization. While crude age standardization uses the ratios of each age group in the observed population, direct age standardization weights age-specific rates by the ratios of each age group in a reference population. This reference population, the so-called standard million, is another required argument in the PySAL implementation of direct age standardization:
+</p>
+
+<p>
+array([[ 0.23744 ,  0.192049,  0.290485],
+       [ 0.266507,  0.217714,  0.323051]])
+The outcome of direct age standardization includes a set of standardized rates and their confidence intervals. The confidence intervals can vary according to the value for the last argument, alpha.
+</p>
+</div>
 </div>
 
 </div>
 
-<div id="outline-container-9" class="outline-2">
-<h2 id="sec-9"><span class="section-number-2">9</span> Indirect standardisation</h2>
-<div class="outline-text-2" id="text-9">
+<div id="outline-container-11" class="outline-2">
+<h2 id="sec-11"><span class="section-number-2">11</span> Indirect Age standardisation</h2>
+<div class="outline-text-2" id="text-11">
 
 
 </div>
 
-<div id="outline-container-9-1" class="outline-3">
-<h3 id="sec-9-1"><span class="section-number-3">9.1</span> istdize</h3>
-<div class="outline-text-3" id="text-9-1">
+<div id="outline-container-11-1" class="outline-3">
+<h3 id="sec-11-1"><span class="section-number-3">11.1</span> istdize</h3>
+<div class="outline-text-3" id="text-11-1">
 
 <p>We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
 </p>
@@ -610,9 +773,9 @@ print(ageadjust.indirect(count=do$death/length(do$death), pop=do$population, std
 
 </div>
 
-<div id="outline-container-9-2" class="outline-3">
-<h3 id="sec-9-2"><span class="section-number-3">9.2</span> rewrite with studypop and time</h3>
-<div class="outline-text-3" id="text-9-2">
+<div id="outline-container-11-2" class="outline-3">
+<h3 id="sec-11-2"><span class="section-number-3">11.2</span> rewrite with studypop and time</h3>
+<div class="outline-text-3" id="text-11-2">
 
 
 
@@ -696,39 +859,56 @@ as.data.frame(t(rage[1,]))
 </pre>
 
 
-</div>
-</div>
-
-</div>
-
-<div id="outline-container-10" class="outline-2">
-<h2 id="sec-10"><span class="section-number-2">10</span> Adjustment using regression</h2>
-<div class="outline-text-2" id="text-10">
 
 </div>
 
 </div>
 
-<div id="outline-container-11" class="outline-2">
-<h2 id="sec-11"><span class="section-number-2">11</span> Control for secular trend</h2>
-<div class="outline-text-2" id="text-11">
+<div id="outline-container-11-3" class="outline-3">
+<h3 id="sec-11-3"><span class="section-number-3">11.3</span> indirect-pysal-code</h3>
+<div class="outline-text-3" id="text-11-3">
 
+<p>While direct age standardization effectively addresses the variety in the risks across age groups, its indirect counterpart is better suited to handle the potential imprecision of age-specific rates due to the small population size. This method uses age-specific rates from the standard million instead of the observed population. It then weights the rates by the ratios of each age group in the observed population. To compute the age-specific rates from the standard million, the PySAL implementation of indirect age standardization requires another argument that contains the counts of the events occurred in the standard million.
+</p>
+
+<p>
+array([[ 0.208055,  0.170156,  0.254395],
+       [ 0.298892,  0.246631,  0.362228]])
+The outcome of indirect age standardization is the same as that of its direct counterpart.
+</p>
+</div>
 </div>
 
 </div>
 
 <div id="outline-container-12" class="outline-2">
-<h2 id="sec-12"><span class="section-number-2">12</span> Uses in spatial epidemiology</h2>
+<h2 id="sec-12"><span class="section-number-2">12</span> Adjustment using regression</h2>
 <div class="outline-text-2" id="text-12">
-
 
 </div>
 
 </div>
 
 <div id="outline-container-13" class="outline-2">
-<h2 id="sec-13"><span class="section-number-2">13</span> Indirect standardisation controlling for spatial correlation</h2>
+<h2 id="sec-13"><span class="section-number-2">13</span> Control for secular trend</h2>
 <div class="outline-text-2" id="text-13">
+
+</div>
+
+</div>
+
+<div id="outline-container-14" class="outline-2">
+<h2 id="sec-14"><span class="section-number-2">14</span> Uses in spatial epidemiology</h2>
+<div class="outline-text-2" id="text-14">
+
+
+</div>
+
+</div>
+
+<div id="outline-container-15" class="outline-2">
+<h2 id="sec-15"><span class="section-number-2">15</span> Indirect standardisation controlling for spatial correlation</h2>
+<div class="outline-text-2" id="text-15">
 
 
 <ul>
@@ -744,9 +924,9 @@ as.data.frame(t(rage[1,]))
 
 </div>
 
-<div id="outline-container-14" class="outline-2">
-<h2 id="sec-14"><span class="section-number-2">14</span> Regression approach to spatial rates</h2>
-<div class="outline-text-2" id="text-14">
+<div id="outline-container-16" class="outline-2">
+<h2 id="sec-16"><span class="section-number-2">16</span> Regression approach to spatial rates</h2>
+<div class="outline-text-2" id="text-16">
 
 <p>Mantel and Stark (1968), with reference to an alternative approach to indirect age standardisation. This is useful when the data are being internally standardised (using the data themselves as the standard) 
 and where there is potential confounding. The general approach is to use a regression model with the variable to be standardised (eg age) and with the stratification variable which is potentially confounded (eg area). 
@@ -764,9 +944,9 @@ The standardised rates by the stratification variable can then be found from the
 
 </div>
 
-<div id="outline-container-15" class="outline-2">
-<h2 id="sec-15"><span class="section-number-2">15</span> Weight by inverse of variance</h2>
-<div class="outline-text-2" id="text-15">
+<div id="outline-container-17" class="outline-2">
+<h2 id="sec-17"><span class="section-number-2">17</span> Weight by inverse of variance</h2>
+<div class="outline-text-2" id="text-17">
 
 <p>In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
 \cite{Boyle} (page 141).
@@ -774,9 +954,9 @@ The standardised rates by the stratification variable can then be found from the
 
 </div>
 
-<div id="outline-container-16" class="outline-2">
-<h2 id="sec-16"><span class="section-number-2">16</span> <span class="todo TODO">TODO</span> References</h2>
-<div class="outline-text-2" id="text-16">
+<div id="outline-container-18" class="outline-2">
+<h2 id="sec-18"><span class="section-number-2">18</span> <span class="todo TODO">TODO</span> References</h2>
+<div class="outline-text-2" id="text-18">
 
 
 

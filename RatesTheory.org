@@ -15,6 +15,251 @@
 #+end_src
 * COMMENT TODO-list
 ** TODO get from /home/ivan/Dropbox/projects/IvanPhD/Papers/RatesAndStandardisation
+** TODO get from keynote SoftwareSupportAndTraining/PostGIS@NCEPH/PostGISatNCEPH/Standardisation/standardisation.r/
+** TODO paraphrase emails
+
+Data Manager work FW: Spatial Statistics Advice
+06 September 2013 09:48Ivan Hanigan
+To:
+ Geoff Mercer 
+You replied on 06/09/2013 10:16.
+
+HI Geoff,
+FYI, just too keep you in the loop with what I have been doing (spdep is a forum I use to support spatial data analysis users, leveraging off spatial stats expertise in other ANU groups).
+I chatted to Aparna about this and she knows the theory background here too, but I didn't feel right sending Elvina over to her for stats advice just yet.  Do you think that is appropriate?  I checked with Paul and Michael at APHCRI and they don't know this area, Rosemary Korda knows some of it but not in the mapping context, more in the Indirect SMRs original purpose – to compare the mortality from different causes within a single population.
+________________________________________
+From: Ivan Hanigan [Ivan.Hanigan@anu.edu.au]
+Sent: 06 September 2013 09:39
+To: Elvina Viennet
+Cc: spdep@alliance.anu.edu.au
+Subject: RE: spatial stats coffee today?
+
+Attachments:
+
+Julious2001JPublicHealth.pdf<https://alliance.anu.edu.au/access/content/attachment/ea804bb9-cb00-49f0-9642-49158e050915/_anon_/06aa4987-c56f-42b9-b643-669d7e123ff3/Julious2001JPublicHealth.pdf>
+
+Julious2001JPublicHealthErrata.pdf<https://alliance.anu.edu.au/access/content/attachment/ea804bb9-cb00-49f0-9642-49158e050915/_anon_/375c4c71-64a3-47ce-8684-b58a6b0f0adc/Julious2001JPublicHealthErrata.pdf>
+
+Note: The above attachments are stored on the Alliance server.
+----------------------
+
+HI EV, yes don't get bogged down on this.
+But please don't make your decision before reading Julious attached - also with Errata (which I think showed they understated their point, "although the CMF still has bigger standard errors compared with the [Indirect] standardized mortality ratio (SMR), the differences are not so marked").
+My position is that you should use Indirect because it is widely accepted to be appropriate in such rare diseases as you have (not literally) - but be aware that there is a deeper controversy in the field (conspiracy even? Note that Neither Anselin or the latest paper you sent mention Julious (nor Yule 1934) point that the Indirect SMR is not always a valid number to use in disease rate maps. Also recall Prof Bob Haining didn't even mention Direct was an option but just described Indirect as "the method".
+
+I personally now have decided if I ever review a paper that uses the Indirect method they better jolly well have proved they checked their assumptions (but that is always the way reviewers operate right?)
+
+Cheers,
+I
+
+________________________________________
+From: Elvina Viennet
+Sent: 06 September 2013 08:45
+To: Ivan Hanigan
+Subject: RE: spatial stats coffee today?
+
+Thanks Ivan.
+
+I have to make my decision .
+Some more readings for myself, thought I should forward.
+
+Cheers,
+Elvina
+
+From: Ivan Hanigan [mailto:Ivan.Hanigan@anu.edu.au]
+Sent: Thursday, 5 September 2013 10:37 PM
+To: spdep@alliance.anu.edu.au
+Subject: FW: spatial stats coffee today?
+
+Hi Francis,
+Rate instability is a problem and rate shrinkage (empirical bayes or other) are appropriate solutions (Anselin and the SAL are field leaders here).
+
+But...
+Validity of the assumptions underlying the rate estimations in the first place are a crucial and often under-scrutinised aspect.
+
+BUT
+I've been pondering Elvina's next steps and feel that we may be "sweating the details" a bit too much here. If the aim is purely to get a publishable (defensible) descriptive map of disease rates then the minimally acceptable solution I think would be Indirectly age standardised SMRs using an internal standard (perhaps with some judicous shrinkage... possibly E-Bayes as you suggest). Given that hardly anybody ever checks that the assumption of proportional hazards holds for this method you should get away with it.
+
+HTH -- I
+________________________________
+From: Francis Markham [francis.markham@anu.edu.au]
+Sent: 05 September 2013 20:54
+To: Ivan Hanigan
+Cc: Elvina Viennet; spdep@alliance.anu.edu.au<mailto:spdep@alliance.anu.edu.au>
+Subject: Re: spatial stats coffee today?
+Sorry I missed you all today. The problem with rate mapping, as I understand it, is that in zones with small samples you get outliers (small number problem), especially for rare diseases. I had to do this once for visualisation (not analysis thankfully) and used a local empirical Bayes to smooth out some of this random variation, but I wasn't very happy with the result.
+
+What do you think you'll end up doing? I'd be keen to learn what to do here in future...
+
+Francis Markham
+PhD candidate, Fenner School of Environment and Society
+Research Officer, Centre for Aboriginal Economic Policy Research
+Australian National University
+Ph: +61-488-196-318
+http://fennerschool.anu.edu.au/about-us/people/francis-markham
+
+On 5 September 2013 20:45, Ivan Hanigan <Ivan.Hanigan@anu.edu.au<mailto:Ivan.Hanigan@anu.edu.au>> wrote:
+Thanks Elvina,
+Whilst we discussed Direct Standardised Mortality/Morbidity Rates and Ratios (SMRs) at length today, this method is not suitable for the case you are dealing with, namely rare diseases in very small areas.
+
+Unfortunately while the Indirect SMR method is often used in this case, it is noted by Anselin et al (and many others) that
+
+"indirectly adjusted rates tend not to be comparable across areas."
+
+So mapping these is problematic.
+
+The main limitation of indirect standardisation is that it assumes proportional hazards for the standard rates compared with the observed rates. Is this true? If so, then you can use indirect standardisation to compare regions on the same map. If not then this is invalid.
+
+From http://www.statsdirect.com/webhelp/#rates/smr.htm
+"Indirect SMRs from different index/study populations are not strictly comparable because they are calculated using different weighting schemes that depend upon the age structures of the index/study populations."
+
+So how can we check the proportional hazards assumption for the standard rates compared with the observed rates?
+
+Indirect SMRs can be compared if you make the assumption that the ratio of rates between index and reference populations is constant; this is similar to the assumption of proportional hazards in Cox regression (Armitage and Berry, 1994).
+
+SO If we were to calculate the Annualised Age Specific Rates for our study areas and for our standard for several years at periodic timepoints across the study period, and then calculate the ratio of these at each timepoint we could reassure our selves that this assumption holds.
+
+At the moment after some experimenting with Pysal I prefer the R implementations (such as http://medepi.com/epitools/ see the ageadjust.indirect() function.)
+
+The other option is to aggregate to larger units but I fear your particular disease is so rare that this will not solve the issue.
+
+ALl the best,
+Ivan.
+________________________________________
+From: Elvina Viennet [Elvina.Viennet@anu.edu.au<mailto:Elvina.Viennet@anu.edu.au>]
+Sent: 05 September 2013 15:50
+To: spdep@alliance.anu.edu.au<mailto:spdep@alliance.anu.edu.au>
+Subject: RE: spatial stats coffee today?
+Attachments:
+
+2006_ANSELIN_Rate transformations and smoothing.pdf<https://alliance.anu.edu.au/access/content/attachment/ea804bb9-cb00-49f0-9642-49158e050915/_anon_/251acd42-83b4-4691-92d7-b7d8a6328e8b/2006_ANSELIN_Rate%20transformations%20and%20smoothing.pdf><https://alliance.anu.edu.au/access/content/attachment/ea804bb9-cb00-49f0-9642-49158e050915/_anon_/251acd42-83b4-4691-92d7-b7d8a6328e8b/2006_ANSELIN_Rate%20transformations%20and%20smoothing.pdf%3E>
+
+Note: The above attachments are stored on the Alliance server.
+----------------------
+Following our really interesting talk, here is another paper.
+Thanks again.
+
+Cheers,
+E
+
+From: Ivan Hanigan [mailto:Ivan.Hanigan@anu.edu.au]
+Sent: Thursday, 5 September 2013 10:34 AM
+To: spdep@alliance.anu.edu.au<mailto:spdep@alliance.anu.edu.au>
+Subject: spatial stats coffee today?
+
+any topics out there?
+Elvina and I have been discussing disease rate mapping and I've got a rant brewing about python, specifically this silly implementation of a 'bread-and-butter' method for epidemiology and demography.
+
+1 Crude Age Standardization¶
+
+In this approach, the rate for an area is simply the sum of age-specific rates weighted by the ratios of each age group in the total population.
+
+To obtain the rates based on this approach, we first need to create two variables that correspond to event counts and population values, respectively.
+
+1.1 crude-pysal-code
+
+The following is paraphrased from http://pythonhosted.org/PySAL/users/tutorials/smoothing.html#age-standardization-in-pysal
+
+To apply the crude age standardization in pysal, we need to make the following function call (after first creating some test data):
+
+import numpy as np
+
+from pysal.esda import smoothing as sm
+
+e = np.array([30, 25, 25, 15, 33, 21, 30, 20])
+
+b = np.array([100, 100, 110, 90, 100, 90, 110, 90])
+
+sm.crude_age_standardization(e, b, 2)
+
+In the function call above, the last argument indicates the number of area units.
+array([ 0.2375 , 0.26666667])
+
+
+The outcome in the second line shows that the age-standardized rates for two areas are about 0.24 and 0.27, respectively.
+
+Each set of numbers should include n by h elements where n and h are the number of areal units and the number of age groups. In the above example there are two regions with 4 age groups. Age groups are identical across regions. The first four elements in b represent the populations of 4 age groups in the first region, and the last four elements the populations of the same age groups in the second region.
+
+1.2 Critique
+-* The requirement to specify number of areas is silly (area-code is a common dimension of such datasets)
+-* Does this take matrices or pandas dataframes? Health data usually are structured in tables.
+
+1.3 crude-R-code
+
+The same thing is trivial in R. But this time we'll take a data.frame of cases and populations from two areas rather than seperate vectors, which is a more common way for health data to be arranged.
+
+# func
+
+require(plyr)
+
+# load
+
+df <- read.table(textConnection(
+
+"a e b
+
+a 30 100
+
+a 25 100
+
+a 25 110
+
+a 15 90
+
+b 33 100
+
+b 21 90
+
+b 30 110
+
+b 20 90"
+
+), sep = "", header = T)
+
+# check
+
+str(df)
+
+# do
+
+ddply(df, 'a', summarise, counts = sum(e), pop = sum(b), rate = sum(e)/sum(b))
+
+
+
+
+________________________________
+
+This automatic notification message was sent by Alliance (https://alliance.anu.edu.au/portal) from the spdep site.
+You can modify how you receive notifications at My Workspace > Preferences.
+
+[see attachment: "2006_ANSELIN_Rate transformations and smoothing.pdf", size: 376818 bytes]
+
+________________________________
+
+This automatic notification message was sent by Alliance (https://alliance.anu.edu.au/portal) from the spdep site.
+You can modify how you receive notifications at My Workspace > Preferences.
+________________________________
+
+This automatic notification message was sent by Alliance (https://alliance.anu.edu.au/portal) from the spdep site.
+You can modify how you receive notifications at My Workspace > Preferences.
+
+
+________________________________
+
+This automatic notification message was sent by Alliance (https://alliance.anu.edu.au/portal) from the spdep site.
+You can modify how you receive notifications at My Workspace > Preferences.[see attachment: "Julious2001JPublicHealth.pdf", size: 78043 bytes]
+
+[see attachment: "Julious2001JPublicHealthErrata.pdf", size: 29760 bytes]
+
+
+________________________________
+
+This automatic notification message was sent by Alliance (https://alliance.anu.edu.au/portal) from the spdep site.
+You can modify how you receive notifications at My Workspace > Preferences.
+
+
+
+
 * COMMENT init
 ** init
 #+name:conf
@@ -158,7 +403,90 @@ round(100000*isr$rate, 1) ##rate per 100,000 per year
   
 #+end_src
 
-* Direct standardisation
+* Age Specific Rates
+* Crude Age Standardization
+In this approach, the rate for an area is simply the sum of age-specific rates weighted by the ratios of each age group in the total population.
+
+To obtain the rates based on this approach, we first need to create two variables that correspond to event counts and population values, respectively.
+*** crude-pysal-code
+The following is paraphrased from http://pythonhosted.org/PySAL/users/tutorials/smoothing.html#age-standardization-in-pysal
+
+To apply the crude age standardization in pysal, we need to make the following function call (after first creating some test data):
+
+#+name:crude-pysal
+#+begin_src python :session *shell* :tangle pysal-crd.py :eval no
+  import numpy as np
+  from pysal.esda import smoothing as sm
+  e = np.array([30, 25, 25, 15, 33, 21, 30, 20])
+  b = np.array([100, 100, 110, 90, 100, 90, 110, 90])  
+  out = sm.crude_age_standardization(e, b, 2)
+  print out
+#+end_src
+
+*** pysal-crd-run-code
+#+name:pysal-crd-run
+#+begin_src sh :session *shell* 
+python pysal-crd.py
+#+end_src
+
+#+RESULTS: pysal-crd-run
+: [ 0.2375      0.26666667]
+
+
+
+In the function call above, the last argument indicates the number of area units. 
+
+|array([ 0.2375    ,  0.26666667])|
+
+The outcome in the second line shows that the age-standardized rates for two areas are about 0.24 and 0.27, respectively.
+
+Each set of numbers should include n by h elements where n and h are the number of areal units and the number of age groups. In the above example there are two regions with 4 age groups. Age groups are identical across regions. The first four elements in b represent the populations of 4 age groups in the first region, and the last four elements the populations of the same age groups in the second region.
+
+*** Critique
+- The requirement to specify number of areas is silly (area-code is a common dimension of such datasets)
+- Does this take matrices or pandas dataframes?  Health data usually are structured in tables.
+*** COMMENT crude-R-create-df-code
+#+name:crude
+#+begin_src R :session *R* :tangle no :eval no
+  ################################################################
+  # name:crude
+  # aim R implement 
+  e =c(30, 25, 25, 15, 33, 21, 30, 20)
+  b = c(100, 100, 110, 90, 100, 90, 110, 90)
+  a = c(rep("a",4),rep("b",4))
+  df <- data.frame(a,e,b)
+#+end_src
+*** crude-R-code
+The same thing is trivial in R.  But this time we'll take a data.frame of cases and populations from two areas rather than seperate vectors, which is a more common way for health data to be arranged. 
+
+#+name:crude-R
+#+begin_src R :session *R* :tangle no :eval yes
+  # func
+  require(plyr)
+  # load
+  df <- read.table(textConnection(
+  "a  e   b
+  a 30 100
+  a 25 100
+  a 25 110
+  a 15  90
+  b 33 100
+  b 21  90
+  b 30 110
+  b 20  90"
+  ), sep = "", header = T)
+  # check
+  str(df)
+  # do
+  ddply(df, 'a', summarise, counts = sum(e), pop = sum(b), rate = sum(e)/sum(b))
+  
+#+end_src
+
+#+RESULTS: crude-R
+| a |  95 | 400 |            0.2375 |
+| b | 104 | 390 | 0.266666666666667 |
+
+* Direct Age standardisation
 ** dstdize
 #+name:do-dstdize
 #+begin_src R :session *R* :tangle src/do-dstdize.r :exports reports :eval no
@@ -302,7 +630,20 @@ directRates <- function(analyte, standard_pop, stratify.var = c('dthdate')){
 *** TODO clean
 *** TODO do
 
-* Indirect standardisation
+** direct-pysal-code
+Direct age standardization is a variation of the crude age standardization. While crude age standardization uses the ratios of each age group in the observed population, direct age standardization weights age-specific rates by the ratios of each age group in a reference population. This reference population, the so-called standard million, is another required argument in the PySAL implementation of direct age standardization:
+
+#+name:direct-pysal
+#+begin_src python :session *shell* :tangle direct-pysal.py :exports none :eval no
+s = np.array([100, 90, 100, 90, 100, 90, 100, 90])
+rate = sm.direct_age_standardization(e, b, s, 2, alpha=0.05)
+np.array(rate).round(6)
+#+end_src
+array([[ 0.23744 ,  0.192049,  0.290485],
+       [ 0.266507,  0.217714,  0.323051]])
+The outcome of direct age standardization includes a set of standardized rates and their confidence intervals. The confidence intervals can vary according to the value for the last argument, alpha.
+
+* Indirect Age standardisation
 ** istdize
 We will use data borrowed from Kahn and Sempos (1989, 95-105) that are available on the Stata website, and in the datasets and do-files subdirectory.  The problem is (Stata 9, Ref A-J, p. 310), We want to compare 1970 mortality rates in California and Maine, adjusting for age.  Although we have age-specific population counts for the two states, we lack age-specific death rates.  In this situation, direct standardization is not feasible.  We can use the US population census data for the same year to produce indirectly standardized rates for the these two states.       
 
@@ -410,6 +751,20 @@ as.data.frame(t(rage[1,]))
 
 
 #+end_src
+
+
+** indirect-pysal-code
+While direct age standardization effectively addresses the variety in the risks across age groups, its indirect counterpart is better suited to handle the potential imprecision of age-specific rates due to the small population size. This method uses age-specific rates from the standard million instead of the observed population. It then weights the rates by the ratios of each age group in the observed population. To compute the age-specific rates from the standard million, the PySAL implementation of indirect age standardization requires another argument that contains the counts of the events occurred in the standard million.
+
+#+name:indirect-pysal
+#+begin_src python :session *shell* :tangle indirect-pysal.py :exports none :eval no
+s_e = np.array([10, 15, 12, 10, 5, 3, 20, 8])
+rate = sm.indirect_age_standardization(e, b, s_e, s, 2, alpha=0.05)
+np.array(rate).round(6)
+#+end_src
+array([[ 0.208055,  0.170156,  0.254395],
+       [ 0.298892,  0.246631,  0.362228]])
+The outcome of indirect age standardization is the same as that of its direct counterpart.
 
 * Adjustment using regression
 * Control for secular trend
