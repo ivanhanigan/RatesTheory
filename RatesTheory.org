@@ -787,6 +787,12 @@ The standardised rates by the stratification variable can then be found from the
 In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
 \cite{Boyle} (page 141).
 * TODO References
+1. P Armitage and G Berry. Statistical methods in medical research. Oxford:
+Blackwell Scientific, 1987.
+
+2. P Boyle and D M Parkin. Chapter 11 . Statistical methods for registries. In
+International Agency for Research on Cancer. 1991.
+
 * COMMENT ref
 \bibliographystyle{unsrt}
 \bibliography{/home/ivan/references/library}
