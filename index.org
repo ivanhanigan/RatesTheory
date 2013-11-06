@@ -627,22 +627,29 @@ directRates <- function(analyte, standard_pop, stratify.var = c('dthdate')){
 
 #+end_src
 
-*** TODO load
-*** TODO clean
-*** TODO do
+*** COMMENT TODO load
+*** COMMENT TODO clean
+*** COMMENT TODO do
 
 ** direct-pysal-code
 Direct age standardization is a variation of the crude age standardization. While crude age standardization uses the ratios of each age group in the observed population, direct age standardization weights age-specific rates by the ratios of each age group in a reference population. This reference population, the so-called standard million, is another required argument in the PySAL implementation of direct age standardization:
 
 #+name:direct-pysal
-#+begin_src python :session *shell* :tangle direct-pysal.py :exports none :eval no
+#+begin_src python :session *shell* :tangle direct-pysal.py :exports reports :eval no
 s = np.array([100, 90, 100, 90, 100, 90, 100, 90])
 rate = sm.direct_age_standardization(e, b, s, 2, alpha=0.05)
 np.array(rate).round(6)
 #+end_src
+
+Results:
+
+#+begin_src python :session *shell* :tangle no :exports reports :eval no
 array([[ 0.23744 ,  0.192049,  0.290485],
        [ 0.266507,  0.217714,  0.323051]])
-The outcome of direct age standardization includes a set of standardized rates and their confidence intervals. The confidence intervals can vary according to the value for the last argument, alpha.
+#+end_src
+
+The outcome of direct age standardization includes a set of standardized rates and their confidence intervals. The confidence intervals can vary according to the value for the last argument, alpha
+** TODO direct-r-vs-pysal
 
 * Indirect Age standardisation
 ** istdize
@@ -758,14 +765,22 @@ as.data.frame(t(rage[1,]))
 While direct age standardization effectively addresses the variety in the risks across age groups, its indirect counterpart is better suited to handle the potential imprecision of age-specific rates due to the small population size. This method uses age-specific rates from the standard million instead of the observed population. It then weights the rates by the ratios of each age group in the observed population. To compute the age-specific rates from the standard million, the PySAL implementation of indirect age standardization requires another argument that contains the counts of the events occurred in the standard million.
 
 #+name:indirect-pysal
-#+begin_src python :session *shell* :tangle indirect-pysal.py :exports none :eval no
+#+begin_src python :session *shell* :tangle indirect-pysal.py :exports reports :eval no
 s_e = np.array([10, 15, 12, 10, 5, 3, 20, 8])
 rate = sm.indirect_age_standardization(e, b, s_e, s, 2, alpha=0.05)
 np.array(rate).round(6)
 #+end_src
+
+Results
+
+#+begin_src python :session *shell* :tangle no :exports reports :eval no
 array([[ 0.208055,  0.170156,  0.254395],
        [ 0.298892,  0.246631,  0.362228]])
+#+end_src
+
 The outcome of indirect age standardization is the same as that of its direct counterpart.
+
+** TODO indirect-r-vs-pysal
 
 * Adjustment using regression
 * Control for secular trend

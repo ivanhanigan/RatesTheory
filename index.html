@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Rates, Standardisation and Adjustment"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-11-06T13:05+1100"/>
+<meta name="generated" content="2013-11-06T13:09+1100"/>
 <meta name="author" content="Ivan Hanigan"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -165,12 +165,10 @@ for the JavaScript code in this tag.
 <li><a href="#sec-10-2">10.2 directRates</a>
 <ul>
 <li><a href="#sec-10-2-1">10.2.1 func</a></li>
-<li><a href="#sec-10-2-2">10.2.2 load</a></li>
-<li><a href="#sec-10-2-3">10.2.3 clean</a></li>
-<li><a href="#sec-10-2-4">10.2.4 do</a></li>
 </ul>
 </li>
 <li><a href="#sec-10-3">10.3 direct-pysal-code</a></li>
+<li><a href="#sec-10-4">10.4 direct-r-vs-pysal</a></li>
 </ul>
 </li>
 <li><a href="#sec-11">11 Indirect Age standardisation</a>
@@ -178,6 +176,7 @@ for the JavaScript code in this tag.
 <li><a href="#sec-11-1">11.1 istdize</a></li>
 <li><a href="#sec-11-2">11.2 rewrite with studypop and time</a></li>
 <li><a href="#sec-11-3">11.3 indirect-pysal-code</a></li>
+<li><a href="#sec-11-4">11.4 indirect-r-vs-pysal</a></li>
 </ul>
 </li>
 <li><a href="#sec-12">12 Adjustment using regression</a></li>
@@ -683,33 +682,12 @@ rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, co
 </pre>
 
 
+
+
+
+
 </li>
 </ul>
-</div>
-
-</div>
-
-<div id="outline-container-10-2-2" class="outline-4">
-<h4 id="sec-10-2-2"><span class="section-number-4">10.2.2</span> <span class="todo TODO">TODO</span> load</h4>
-<div class="outline-text-4" id="text-10-2-2">
-
-</div>
-
-</div>
-
-<div id="outline-container-10-2-3" class="outline-4">
-<h4 id="sec-10-2-3"><span class="section-number-4">10.2.3</span> <span class="todo TODO">TODO</span> clean</h4>
-<div class="outline-text-4" id="text-10-2-3">
-
-</div>
-
-</div>
-
-<div id="outline-container-10-2-4" class="outline-4">
-<h4 id="sec-10-2-4"><span class="section-number-4">10.2.4</span> <span class="todo TODO">TODO</span> do</h4>
-<div class="outline-text-4" id="text-10-2-4">
-
-
 </div>
 </div>
 
@@ -722,11 +700,36 @@ rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, co
 <p>Direct age standardization is a variation of the crude age standardization. While crude age standardization uses the ratios of each age group in the observed population, direct age standardization weights age-specific rates by the ratios of each age group in a reference population. This reference population, the so-called standard million, is another required argument in the PySAL implementation of direct age standardization:
 </p>
 
+
+
+<pre class="src src-python"><span style="color: #268bd2;">s</span> = np.array([100, 90, 100, 90, 100, 90, 100, 90])
+<span style="color: #268bd2;">rate</span> = sm.direct_age_standardization(e, b, s, 2, alpha=0.05)
+np.array(rate).<span style="color: #268bd2; font-style: italic;">round</span>(6)
+</pre>
+
+
 <p>
-array([[ 0.23744 ,  0.192049,  0.290485],
-       [ 0.266507,  0.217714,  0.323051]])
-The outcome of direct age standardization includes a set of standardized rates and their confidence intervals. The confidence intervals can vary according to the value for the last argument, alpha.
+Results:
 </p>
+
+
+
+<pre class="src src-python">array([[ 0.23744 ,  0.192049,  0.290485],
+       [ 0.266507,  0.217714,  0.323051]])
+</pre>
+
+
+<p>
+The outcome of direct age standardization includes a set of standardized rates and their confidence intervals. The confidence intervals can vary according to the value for the last argument, alpha
+</p></div>
+
+</div>
+
+<div id="outline-container-10-4" class="outline-3">
+<h3 id="sec-10-4"><span class="section-number-3">10.4</span> <span class="todo TODO">TODO</span> direct-r-vs-pysal</h3>
+<div class="outline-text-3" id="text-10-4">
+
+
 </div>
 </div>
 
@@ -873,11 +876,37 @@ as.data.frame(t(rage[1,]))
 <p>While direct age standardization effectively addresses the variety in the risks across age groups, its indirect counterpart is better suited to handle the potential imprecision of age-specific rates due to the small population size. This method uses age-specific rates from the standard million instead of the observed population. It then weights the rates by the ratios of each age group in the observed population. To compute the age-specific rates from the standard million, the PySAL implementation of indirect age standardization requires another argument that contains the counts of the events occurred in the standard million.
 </p>
 
+
+
+<pre class="src src-python"><span style="color: #268bd2;">s_e</span> = np.array([10, 15, 12, 10, 5, 3, 20, 8])
+<span style="color: #268bd2;">rate</span> = sm.indirect_age_standardization(e, b, s_e, s, 2, alpha=0.05)
+np.array(rate).<span style="color: #268bd2; font-style: italic;">round</span>(6)
+</pre>
+
+
 <p>
-array([[ 0.208055,  0.170156,  0.254395],
+Results
+</p>
+
+
+
+<pre class="src src-python">array([[ 0.208055,  0.170156,  0.254395],
        [ 0.298892,  0.246631,  0.362228]])
+</pre>
+
+
+<p>
 The outcome of indirect age standardization is the same as that of its direct counterpart.
 </p>
+</div>
+
+</div>
+
+<div id="outline-container-11-4" class="outline-3">
+<h3 id="sec-11-4"><span class="section-number-3">11.4</span> <span class="todo TODO">TODO</span> indirect-r-vs-pysal</h3>
+<div class="outline-text-3" id="text-11-4">
+
+
 </div>
 </div>
 
