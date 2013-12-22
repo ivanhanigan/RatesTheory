@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Rates, Standardisation and Adjustment"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-11-06T13:09+1100"/>
+<meta name="generated" content="2013-12-22T14:42+1100"/>
 <meta name="author" content="Ivan Hanigan"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -184,7 +184,12 @@ for the JavaScript code in this tag.
 <li><a href="#sec-14">14 Uses in spatial epidemiology</a></li>
 <li><a href="#sec-15">15 Indirect standardisation controlling for spatial correlation</a></li>
 <li><a href="#sec-16">16 Regression approach to spatial rates</a></li>
-<li><a href="#sec-17">17 Weight by inverse of variance</a></li>
+<li><a href="#sec-17">17 Weight by inverse of variance</a>
+<ul>
+<li><a href="#sec-17-1">17.1 Weighted Regression</a></li>
+<li><a href="#sec-17-2">17.2 Calculate the Variance of an Areal Unit's Rate</a></li>
+</ul>
+</li>
 <li><a href="#sec-18">18 References</a></li>
 </ul>
 </div>
@@ -419,9 +424,9 @@ To apply the crude age standardization in pysal, we need to make the following f
 
 <pre class="src src-python"><span style="color: #859900; font-weight: bold;">import</span> numpy <span style="color: #859900; font-weight: bold;">as</span> np
 <span style="color: #859900; font-weight: bold;">from</span> pysal.esda <span style="color: #859900; font-weight: bold;">import</span> smoothing <span style="color: #859900; font-weight: bold;">as</span> sm
-<span style="color: #268bd2;">e</span> = np.array([30, 25, 25, 15, 33, 21, 30, 20])
-<span style="color: #268bd2;">b</span> = np.array([100, 100, 110, 90, 100, 90, 110, 90])  
-<span style="color: #268bd2;">out</span> = sm.crude_age_standardization(e, b, 2)
+<span style="color: #839496; background-color: #002b36;">e</span> = np.array([<span style="color: #839496; background-color: #002b36;">30</span>, <span style="color: #839496; background-color: #002b36;">25</span>, <span style="color: #839496; background-color: #002b36;">25</span>, <span style="color: #839496; background-color: #002b36;">15</span>, <span style="color: #839496; background-color: #002b36;">33</span>, <span style="color: #839496; background-color: #002b36;">21</span>, <span style="color: #839496; background-color: #002b36;">30</span>, <span style="color: #839496; background-color: #002b36;">20</span>])
+<span style="color: #839496; background-color: #002b36;">b</span> = np.array([<span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">110</span>, <span style="color: #839496; background-color: #002b36;">90</span>, <span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">90</span>, <span style="color: #839496; background-color: #002b36;">110</span>, <span style="color: #839496; background-color: #002b36;">90</span>])  
+<span style="color: #839496; background-color: #002b36;">out</span> = sm.crude_age_standardization(<span style="color: #839496; background-color: #002b36;">e</span>, <span style="color: #839496; background-color: #002b36;">b</span>, <span style="color: #839496; background-color: #002b36;">2</span>)
 <span style="color: #859900; font-weight: bold;">print</span> out
 </pre>
 
@@ -702,9 +707,9 @@ rageadjust.direct(data = d, age =<span style="color: #2aa198;">'ageg'</span>, co
 
 
 
-<pre class="src src-python"><span style="color: #268bd2;">s</span> = np.array([100, 90, 100, 90, 100, 90, 100, 90])
-<span style="color: #268bd2;">rate</span> = sm.direct_age_standardization(e, b, s, 2, alpha=0.05)
-np.array(rate).<span style="color: #268bd2; font-style: italic;">round</span>(6)
+<pre class="src src-python"><span style="color: #839496; background-color: #002b36;">s</span> = np.array([<span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">90</span>, <span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">90</span>, <span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">90</span>, <span style="color: #839496; background-color: #002b36;">100</span>, <span style="color: #839496; background-color: #002b36;">90</span>])
+<span style="color: #839496; background-color: #002b36;">rate</span> = sm.direct_age_standardization(<span style="color: #839496; background-color: #002b36;">e</span>, <span style="color: #839496; background-color: #002b36;">b</span>, s, <span style="color: #839496; background-color: #002b36;">2</span>, alpha=<span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">05</span>)
+np.array(rate).round(<span style="color: #839496; background-color: #002b36;">6</span>)
 </pre>
 
 
@@ -714,8 +719,8 @@ Results:
 
 
 
-<pre class="src src-python">array([[ 0.23744 ,  0.192049,  0.290485],
-       [ 0.266507,  0.217714,  0.323051]])
+<pre class="src src-python">array([[ <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">23744</span> ,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">192049</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">290485</span>],
+       [ <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">266507</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">217714</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">323051</span>]])
 </pre>
 
 
@@ -878,9 +883,9 @@ as.data.frame(t(rage[1,]))
 
 
 
-<pre class="src src-python"><span style="color: #268bd2;">s_e</span> = np.array([10, 15, 12, 10, 5, 3, 20, 8])
-<span style="color: #268bd2;">rate</span> = sm.indirect_age_standardization(e, b, s_e, s, 2, alpha=0.05)
-np.array(rate).<span style="color: #268bd2; font-style: italic;">round</span>(6)
+<pre class="src src-python"><span style="color: #839496; background-color: #002b36;">s_e</span> = np.array([<span style="color: #839496; background-color: #002b36;">10</span>, <span style="color: #839496; background-color: #002b36;">15</span>, <span style="color: #839496; background-color: #002b36;">12</span>, <span style="color: #839496; background-color: #002b36;">10</span>, <span style="color: #839496; background-color: #002b36;">5</span>, <span style="color: #839496; background-color: #002b36;">3</span>, <span style="color: #839496; background-color: #002b36;">20</span>, <span style="color: #839496; background-color: #002b36;">8</span>])
+<span style="color: #839496; background-color: #002b36;">rate</span> = sm.indirect_age_standardization(<span style="color: #839496; background-color: #002b36;">e</span>, <span style="color: #839496; background-color: #002b36;">b</span>, s_e, s, <span style="color: #839496; background-color: #002b36;">2</span>, alpha=<span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">05</span>)
+np.array(rate).round(<span style="color: #839496; background-color: #002b36;">6</span>)
 </pre>
 
 
@@ -890,8 +895,8 @@ Results
 
 
 
-<pre class="src src-python">array([[ 0.208055,  0.170156,  0.254395],
-       [ 0.298892,  0.246631,  0.362228]])
+<pre class="src src-python">array([[ <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">208055</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">170156</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">254395</span>],
+       [ <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">298892</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">246631</span>,  <span style="color: #839496; background-color: #002b36;">0</span>.<span style="color: #839496; background-color: #002b36;">362228</span>]])
 </pre>
 
 
@@ -979,9 +984,59 @@ The standardised rates by the stratification variable can then be found from the
 <h2 id="sec-17"><span class="section-number-2">17</span> Weight by inverse of variance</h2>
 <div class="outline-text-2" id="text-17">
 
-<p>In regression analyses the age-standardized rates can be used as the response variable and will probably suit a normal OLS or gaussian GLM.  In many cases weighted regression may be more appropriate, where each point does not contribute the same amount of information to fitting the regression line. It is common to use weights wi = l/Var (yi): see \cite{Armitage} and
-\cite{Boyle} (page 141).
-</p></div>
+
+</div>
+
+<div id="outline-container-17-1" class="outline-3">
+<h3 id="sec-17-1"><span class="section-number-3">17.1</span> Weighted Regression</h3>
+<div class="outline-text-3" id="text-17-1">
+
+<p>In regression analyses the age-standardized rates can be used as the
+response variable and will probably suit a normal OLS or gaussian GLM.
+In many cases weighted regression may be more appropriate, where each
+point does not contribute the same amount of information to fitting
+the regression line. It is common to use weights (see \cite{Armitage} and \cite{Boyle} (page 141).)
+</p>
+
+
+<pre class="src src-R">wi = l/Var (yi)
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-17-2" class="outline-3">
+<h3 id="sec-17-2"><span class="section-number-3">17.2</span> Calculate the Variance of an Areal Unit's Rate</h3>
+<div class="outline-text-3" id="text-17-2">
+
+<p>To calculate the variance for each age standardised rate at each time
+point, first the proportion of the age group in the standard
+population (that is the population in that age group divided by the
+total population in the standard multiplied by 1000) is applied to the
+counts observed in that age group in the study population (Mark
+Clements 2005 personal communication). Then this is divided by the
+square of the population in that age group in the study area. This is
+then summed for each area. Then the inverse is used as the weight in
+the regression model.  Expressed as an equation this is:
+</p>
+
+
+
+<pre class="src src-R">Variance (age standardised ratej) = (&#931; W j * y ij )/ &#931; Nij^2
+
+Where:
+j = area,
+y = deaths,
+i = age,
+N = population, and
+W j = (Population <span style="color: #859900; font-weight: bold;">in</span> age group i   /Total population <span style="color: #859900; font-weight: bold;">in</span> standard ) * 1000
+</pre>
+
+
+</div>
+</div>
 
 </div>
 
