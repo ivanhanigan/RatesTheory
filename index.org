@@ -831,6 +831,14 @@ i = age,
 N = population, and
 W j = (Population in age group i   /Total population in standard ) * 1000
 #+end_src
+*** Inverse variance weighting of direct rates
+The use of direct rates is used with caution in small subpopulations because it is well-known to be prone to imprecision and noise. This can be addressed by comparing results of the unweighted regression with regression weighted by the inverse of the variances of the standardized rates. To calculate the variance for each neigborhood’s standardized rate, first the proportion of the age group in the standard population (that is the population in that age group divided by the total population in the standard multiplied by 1000) is applied to the counts observed in that age group in the study population. Then this is divided by the square of the population in that age group in the study area. This is then summed for each area. Then the inverse is used as the weight in the regression model.
+
+Expressed as an equation this is: 
+Variance (age standardised ratej) = Σ W i * y ij / Σ Nij2
+Where j = area, y = deaths, i = age, N = population, and 
+Wi = (Population in age group i / Total population in standard) * 1000 
+These weights are used by the least-squares algorithm which minimizes the sum of the squared residuals multiplied by the weights.
 
 * TODO References
 1. P Armitage and G Berry. Statistical methods in medical research. Oxford: Blackwell Scientific, 1987.
