@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="Rates, Standardisation and Adjustment"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-12-22T14:42+1100"/>
+<meta name="generated" content="2016-11-16T09:48+1100"/>
 <meta name="author" content="Ivan Hanigan"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -187,7 +187,10 @@ for the JavaScript code in this tag.
 <li><a href="#sec-17">17 Weight by inverse of variance</a>
 <ul>
 <li><a href="#sec-17-1">17.1 Weighted Regression</a></li>
-<li><a href="#sec-17-2">17.2 Calculate the Variance of an Areal Unit's Rate</a></li>
+<li><a href="#sec-17-2">17.2 Calculate the Variance of an Areal Unit's Rate</a>
+<ul>
+<li><a href="#sec-17-2-1">17.2.1 Inverse variance weighting of direct rates</a></li>
+</ul></li>
 </ul>
 </li>
 <li><a href="#sec-18">18 References</a></li>
@@ -1011,30 +1014,36 @@ the regression line. It is common to use weights (see \cite{Armitage} and \cite{
 <h3 id="sec-17-2"><span class="section-number-3">17.2</span> Calculate the Variance of an Areal Unit's Rate</h3>
 <div class="outline-text-3" id="text-17-2">
 
-<p>To calculate the variance for each age standardised rate at each time
-point, first the proportion of the age group in the standard
-population (that is the population in that age group divided by the
-total population in the standard multiplied by 1000) is applied to the
-counts observed in that age group in the study population (Mark
-Clements 2005 personal communication). Then this is divided by the
-square of the population in that age group in the study area. This is
-then summed for each area. Then the inverse is used as the weight in
-the regression model.  Expressed as an equation this is:
+
+
+</div>
+
+<div id="outline-container-17-2-1" class="outline-4">
+<h4 id="sec-17-2-1"><span class="section-number-4">17.2.1</span> Inverse variance weighting of direct rates</h4>
+<div class="outline-text-4" id="text-17-2-1">
+
+<p>The use of direct rates is used with caution in small subpopulations because it is well-known to be prone to imprecision and noise. This can be addressed by comparing results of the unweighted regression with regression weighted by the inverse of the variances of the standardized rates. To calculate the variance for each neigborhood’s standardized rate, first the proportion of the age group in the standard population (that is the population in that age group divided by the total population in the standard multiplied by 1000) is applied to the counts observed in that age group in the study population. Then this is divided by the square of the population in that age group in the study area. This is then summed for each area. Then the inverse is used as the weight in the regression model.
+</p>
+<p>
+Expressed as an equation this is: 
 </p>
 
 
 
-<pre class="src src-R">Variance (age standardised ratej) = (&#931; W j * y ij )/ &#931; Nij^2
+<pre class="src src-R">Variance (age standardised ratej) = &#931; W i * y ij / &#931; Nij2
 
-Where:
-j = area,
-y = deaths,
-i = age,
-N = population, and
-W j = (Population <span style="color: #859900; font-weight: bold;">in</span> age group i   /Total population <span style="color: #859900; font-weight: bold;">in</span> standard ) * 1000
+Where: 
+j = area, 
+y = deaths, 
+i = age, 
+N = population, and 
+W i = (Population <span style="color: #859900; font-weight: bold;">in</span> age group i / Total population <span style="color: #859900; font-weight: bold;">in</span> standard) * 1000 
+
 </pre>
 
-
+<p>
+These weights are used by the least-squares algorithm which minimizes the sum of the squared residuals multiplied by the weights.
+</p></div>
 </div>
 </div>
 
